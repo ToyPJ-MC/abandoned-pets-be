@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api")
 class TestController {
+
     @GetMapping("/test")
     fun ResponseBody(): String {
         return("hello");
