@@ -22,11 +22,16 @@ repositories {
 }
 
 dependencies {
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.json:json:20220924")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.6")
+	implementation("mysql:mysql-connector-java:8.0.31")
 	compileOnly("org.projectlombok:lombok")
+
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
