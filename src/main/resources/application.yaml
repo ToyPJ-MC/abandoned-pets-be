@@ -1,1 +1,7 @@
-
+spring:
+  config:
+    import:
+      - application-mysql.yaml
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
