@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository
 interface CountryRepository:JpaRepository<Si,Long> {
     fun findByName(name:String):Si;
     fun findAllBy(): List<Si>;
-    
 }
