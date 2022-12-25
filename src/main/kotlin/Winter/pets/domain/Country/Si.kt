@@ -15,8 +15,8 @@ class Si {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "si_id")
     val id:Long?=null;
-    @Column(name = "si_code")
+    @Column(name = "code")
     var code:String?=null;
-    @Column(name = "si_name")
+    @Column(name = "name")
     var name:String?=null;
 }

@@ -5,6 +5,9 @@ import Winter.pets.domain.Country.Si
 
 interface PetService {
 
-    fun findCountry():List<Si>;
-    fun findGu(name:String):List<String>;
+    fun addToCountry():Unit;
+
+    fun addToGu(name:String):Unit;
+
+    fun findToGu(name:String):List<String>;
 }

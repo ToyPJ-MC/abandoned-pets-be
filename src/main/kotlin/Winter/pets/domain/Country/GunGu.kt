@@ -1,21 +1,25 @@
 package Winter.pets.domain.Country
 
 import lombok.AllArgsConstructor
+import lombok.Builder
 import lombok.Data
 import org.hibernate.annotations.Table
 import javax.persistence.*
 
 @Entity
 @Data
+@Builder
 class GunGu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gu_id")
     val id:Long?=null;
     @Column(name = "gu_code")
-    var gungu_code:String?=null;
+    var gunguCode:String?=null;
     @Column(name = "gu_name")
-    var gungu_name:String?=null;
+    var gunguName:String?=null;
     @Column(name="si_code")
-    var si_code:String?=null;
+    var siCode:String?=null;
+    @Column(name="si_name")
+    var siName:String?=null
 }
