@@ -22,6 +22,13 @@ class PetServiceImpl : PetService {
     lateinit var countryRepository : CountryRepository;
     @Autowired
     lateinit var gunguRepo: gunguRepository;
+
+    constructor(gunguRepo: gunguRepository,countryRepository: CountryRepository) {
+        this.countryRepository = countryRepository
+        this.gunguRepo = gunguRepo
+    }
+
+
     override fun findCountry(): List<Si> {
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/sido");
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D"); /*Service Key*/
@@ -51,6 +58,8 @@ class PetServiceImpl : PetService {
         for(i in 0 until item.length()){
             var si=Si();
             val jObject = item.getJSONObject(i);
+
+
             si.name = jObject.get("orgdownNm").toString();
             si.code =jObject.get("orgCd").toString();
             list.add(si);
@@ -59,7 +68,7 @@ class PetServiceImpl : PetService {
         return list;
         }
     //시에 대한 군/구 찾기
-    override fun findGu(name:String): List<GunGu> {
+    override fun findGu(name:String): List<String> {
         val findCode: Si = countryRepository.findByName(name);
         println(findCode.code);
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/sigungu");
@@ -85,7 +94,7 @@ class PetServiceImpl : PetService {
         val root = JSONObject(buf.toString())
         val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-        var list = ArrayList<GunGu>();
+        var list = ArrayList<String>();
         println(item);
         for(i in 0 until item.length()){
             val gungu=GunGu();
@@ -93,9 +102,11 @@ class PetServiceImpl : PetService {
             gungu.si_code = jObject.getString("uprCd");
             gungu.gungu_code = jObject.getString("orgCd");
             gungu.gungu_name = jObject.getString("orgdownNm");
-            list.add(gungu);
+            var name = gungu.gungu_name;
+            list.add(name.toString());
             gunguRepo.save(gungu);
         }
         return list;
     }
+
 }
