@@ -6,7 +6,7 @@ spring:
     platform: MySQL5Dialect
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     database: mysql
     generate-ddl: true
     show-sql: true
