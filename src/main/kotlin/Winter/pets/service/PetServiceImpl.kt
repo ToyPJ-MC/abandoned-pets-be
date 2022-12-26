@@ -7,6 +7,7 @@ import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
 import Winter.pets.repository.*
 import lombok.extern.slf4j.Slf4j
+import org.json.JSONArray
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -231,6 +232,59 @@ class PetServiceImpl : PetService {
             return dogList
         }
         return emptyList();
+    }
+
+    override fun findToPet(
+        Start: String,
+        end: String,
+        kindCode: String,
+        kind: String,
+        si: String,
+        gungu: String,
+        centerCode: String,
+        state: String,
+        neuter: String
+    ): List<String> {
+        val findGungu:GunGu = gunguRepo.findBySiNameAndGunguName(si,gungu)
+        val findCenter:Center = centerRepo.findByCenterName(centerCode)
+        var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D")
+        urlBuilder.append("&" + URLEncoder.encode("bgnde","UTF-8") + "=" + URLEncoder.encode(Start, "UTF-8")); /*페이지 번호*/
+        urlBuilder.append("&" + URLEncoder.encode("endde","UTF-8") + "=" + URLEncoder.encode(end, "UTF-8")); /*xml(기본값) 또는 json*/
+        urlBuilder.append("&" + URLEncoder.encode("upkind","UTF-8") + "=" + URLEncoder.encode(kindCode, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("kind","UTF-8") + "=" + URLEncoder.encode(kind, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("upr_cd","UTF-8") + "=" + URLEncoder.encode(findGungu.siCode, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("org_cd","UTF-8") + "=" + URLEncoder.encode(findGungu.gunguCode, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("care_reg_no","UTF-8") + "=" + URLEncoder.encode(findCenter.centerCode, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("state","UTF-8") + "=" + URLEncoder.encode(state, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("neuter_yn","UTF-8") + "=" + URLEncoder.encode(neuter, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지 번호*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수(1,000 이하)*/
+        urlBuilder.append("&" + URLEncoder.encode("_type","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml(기본값) 또는 json*/
+        val url = URL(urlBuilder.toString())
+        val conn:HttpURLConnection = url.openConnection() as HttpURLConnection
+        val input = conn.getInputStream()
+        val isr = InputStreamReader(input)
+        // br: 라인 단위로 데이터를 읽어오기 위해서 만듦
+        val br = BufferedReader(isr)
+        var str: String? = null
+        val buf = StringBuffer()
+
+        do{
+            str = br.readLine()
+
+            if(str!=null){
+                buf.append(str)
+            }
+        }while (str!=null)
+        val root = JSONObject(buf.toString())
+        val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
+        val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
+        var list = ArrayList<String>()
+        for(i in 0 until item.length()){
+            list.add(item.getJSONObject(i).toString())
+        }
+        return list
     }
 
 }

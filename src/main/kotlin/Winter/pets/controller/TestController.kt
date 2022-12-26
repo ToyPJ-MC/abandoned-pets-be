@@ -2,13 +2,16 @@ package Winter.pets.controller
 
 import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
+import Winter.pets.repository.CatRepository
+import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
-import io.swagger.annotations.ApiOperation
+
 import io.swagger.v3.oas.annotations.Operation
+import org.json.JSONArray
+import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.lang.RuntimeException
 
 @CrossOrigin("http://192.168.0.16:8080")
 @RestController
@@ -17,8 +20,14 @@ class TestController {
 
     @Autowired
     lateinit var petService: PetService
-    constructor(petService: PetService){{
+    @Autowired
+    lateinit var dogRepo: DogRepository
+    @Autowired
+    lateinit var catRepo: CatRepository
+    constructor(petService: PetService,catRepo:CatRepository,dogRepo:DogRepository){{
         this.petService = petService
+        this.catRepo = catRepo
+        this.dogRepo = dogRepo
     }
 
     }
@@ -81,7 +90,7 @@ class TestController {
     fun AddToKind(kindName: String):ResponseEntity<String>{
         try{
 
-            if(kindName.equals("개")) {
+            if(kindName.equals("417000")) {
                 val dog=Dog()
                 petService.addToKind(dog.dogCode)
                 return ResponseEntity.ok().body("개가 추가되었습니다.")
@@ -102,7 +111,7 @@ class TestController {
     fun findToKind(@RequestParam("kind_name") kindName:String): ResponseEntity<Any> {
         try{
             var list:List<String>;
-            if(kindName.equals("개")) {
+            if(kindName.equals("417000")) {
                 val dog=Dog()
                 list = petService.findToKind(dog.dogCode)
                 return ResponseEntity.ok().body(list);
@@ -113,6 +122,27 @@ class TestController {
                 return ResponseEntity.ok().body(list);
             }
         }catch (e: RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
+    }
+    @Operation(summary = "유기동물 찾기")
+    @PostMapping("find/abandonded")
+    fun findToPet(@RequestParam("start_time")start:String,@RequestParam("end_time")end:String,@RequestParam("kind_code")kindCode:String,
+    @RequestParam("kind")kind:String,@RequestParam("si_code")si:String,@RequestParam("gungu_code")gungu:String,@RequestParam("center")center:String,
+    @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<Any>{
+        try{
+            var list:List<String>
+            if(kindCode.equals("417000")){
+                var findDog:Dog = dogRepo.findByDogName(kind);
+                list = petService.findToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body(list);
+            }
+            else{
+                var findCat:Cat = catRepo.findByCatName(kind);
+                list = petService.findToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body(list);
+            }
+        }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
