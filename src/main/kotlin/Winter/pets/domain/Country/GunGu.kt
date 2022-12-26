@@ -8,7 +8,6 @@ import javax.persistence.*
 
 @Entity
 @Data
-@Builder
 class GunGu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
