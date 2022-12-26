@@ -12,5 +12,7 @@ interface PetService {
     fun findToGu(name:String):List<String>;
 
     fun addToCenter(siName:String,gunguName:String):Unit
-    fun findToCenter(siName:String,gunguName:String):List<String>;
+    fun findToCenter(siName:String,gunguName:String):List<String>
+    fun addToKind(kindName:String):Unit
+    fun findToKind(kindName:String):List<String>
 }
