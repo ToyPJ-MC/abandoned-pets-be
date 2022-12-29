@@ -3,7 +3,7 @@ services:
   abandoned-pets-be:
     image: abandoned-pets:0.0.1
     ports:
-      - "18082:8080"
+      - "18000:8080"
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://203.241.228.50:13307/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
