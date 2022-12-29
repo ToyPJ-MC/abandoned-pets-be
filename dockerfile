@@ -1,4 +1,5 @@
 FROM openjdk:11
-VOLUME /tmp
-COPY ./build/libs/pets-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+CMD ["./mvnw", "clean", "package"]
+ARG JAR_FILE_PATH=build/libs/*.jar
+COPY ${JAR_FILE_PATH} app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
