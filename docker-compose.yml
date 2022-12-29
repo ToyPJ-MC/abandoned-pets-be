@@ -1,7 +1,7 @@
 version: '3'
 services:
-  application:
-    container_name: abandonded-pets
+  abandonded-pets:
+    image: abandonded-pets:0.0.1
     ports:
       - "18082:8080"
     restart: always
