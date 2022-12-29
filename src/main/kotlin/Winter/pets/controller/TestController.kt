@@ -2,6 +2,7 @@ package Winter.pets.controller
 
 import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
+import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.CatRepository
 import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
@@ -131,7 +132,7 @@ class TestController {
     @RequestParam("kind")kind:String,@RequestParam("si_code")si:String,@RequestParam("gungu_code")gungu:String,@RequestParam("center")center:String,
     @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<Any>{
         try{
-            var list:List<String>
+            var list:List<SelectPets>
             if(kindCode.equals("417000")){
                 var findDog:Dog = dogRepo.findByDogName(kind);
                 list = petService.findToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);

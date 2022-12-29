@@ -5,6 +5,7 @@ import Winter.pets.domain.Country.GunGu
 import Winter.pets.domain.Country.Si
 import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
+import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.*
 import lombok.extern.slf4j.Slf4j
 import org.json.JSONArray
@@ -244,7 +245,7 @@ class PetServiceImpl : PetService {
         centerCode: String,
         state: String,
         neuter: String
-    ): List<String> {
+    ): List<SelectPets> {
         val findGungu:GunGu = gunguRepo.findBySiNameAndGunguName(si,gungu)
         val findCenter:Center = centerRepo.findByCenterName(centerCode)
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
@@ -280,9 +281,20 @@ class PetServiceImpl : PetService {
         val root = JSONObject(buf.toString())
         val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-        var list = ArrayList<String>()
+        var list = ArrayList<SelectPets>()
         for(i in 0 until item.length()){
-            list.add(item.getJSONObject(i).toString())
+            var select = SelectPets()
+            val jsonObject = item.getJSONObject(i);
+            select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
+            select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+            select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
+            select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
+            select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
+            select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
+            select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+            select.age = jsonObject.getString("age")
+            println(select.sexCd)
+            list.add(select)
         }
         return list
     }
