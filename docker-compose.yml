@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  abandonded-pets:
+    image: abandonded-pets:0.1
+    ports:
+      - "18082:8080"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://203.241.228.50:13307/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "mega123"
