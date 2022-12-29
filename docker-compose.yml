@@ -1,6 +1,6 @@
 version: '3'
 services:
-  abandoned-pets:
+  abandoned-pets-be:
     image: abandoned-pets:0.0.1
     ports:
       - "18082:8080"
