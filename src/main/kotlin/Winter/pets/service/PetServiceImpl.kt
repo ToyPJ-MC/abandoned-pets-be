@@ -247,7 +247,8 @@ class PetServiceImpl : PetService {
         neuter: String
     ): List<SelectPets> {
         val findGungu:GunGu = gunguRepo.findBySiNameAndGunguName(si,gungu)
-        val findCenter:Center = centerRepo.findByCenterName(centerCode)
+        val findCenter:Center = centerRepo.findByCenterNameAndGunguName(centerCode,gungu)
+        println(findCenter.centerCode)
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D")
         urlBuilder.append("&" + URLEncoder.encode("bgnde","UTF-8") + "=" + URLEncoder.encode(Start, "UTF-8")); /*페이지 번호*/
@@ -260,9 +261,10 @@ class PetServiceImpl : PetService {
         urlBuilder.append("&" + URLEncoder.encode("state","UTF-8") + "=" + URLEncoder.encode(state, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("neuter_yn","UTF-8") + "=" + URLEncoder.encode(neuter, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지 번호*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수(1,000 이하)*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("20", "UTF-8")); /*한 페이지 결과 수(1,000 이하)*/
         urlBuilder.append("&" + URLEncoder.encode("_type","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml(기본값) 또는 json*/
         val url = URL(urlBuilder.toString())
+        println(url.toString())
         val conn:HttpURLConnection = url.openConnection() as HttpURLConnection
         val input = conn.getInputStream()
         val isr = InputStreamReader(input)
@@ -293,7 +295,6 @@ class PetServiceImpl : PetService {
             select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
             select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
             select.age = jsonObject.getString("age")
-            println(select.sexCd)
             list.add(select)
         }
         return list
