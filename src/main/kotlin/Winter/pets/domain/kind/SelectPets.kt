@@ -1,6 +1,15 @@
 package Winter.pets.domain.kind
 
+import lombok.Data
+import javax.persistence.*
+
+@Entity
+@Data
 class SelectPets {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="pets_id")
+    val id:Long?=null
     var sexCd:String?=null
     var kindCd:String?=null
     var noticeNo:String?=null

@@ -18,6 +18,8 @@ interface PetService {
     fun findToCenter(siName:String,gunguName:String):List<String>
     fun addToKind(kindName:String):Unit
     fun findToKind(kindName:String):List<String>
-    fun findToPet(Start:String,end:String,kindCode:String,kind:String,
-                  si:String,gungu:String,centerCode:String,state:String,neuter:String):List<SelectPets>
+    fun addToPet(Start:String,end:String,kindCode:String,kind:String,
+                  si:String,gungu:String,centerCode:String,state:String,neuter:String): Unit
+    fun findToPet():List<SelectPets>
+
 }

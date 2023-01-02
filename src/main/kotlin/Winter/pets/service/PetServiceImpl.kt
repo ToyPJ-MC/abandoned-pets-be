@@ -31,13 +31,16 @@ class PetServiceImpl : PetService {
     lateinit var catRepo : CatRepository;
     @Autowired
     lateinit var dogRepo : DogRepository;
+    @Autowired
+    lateinit var petRepo : PetsRepository;
     constructor(gunguRepo: gunguRepository, countryRepository: CountryRepository,
-                centerRepo: CenterRepository,dogRepo:DogRepository,catRepo:CatRepository) {
+                centerRepo: CenterRepository,dogRepo:DogRepository,catRepo:CatRepository,petRepo : PetsRepository) {
         this.countryRepository = countryRepository
         this.gunguRepo = gunguRepo
         this.centerRepo = centerRepo
         this.catRepo = catRepo
         this.dogRepo = dogRepo
+        this.petRepo = petRepo
     }
 
     //시 db에 저장
@@ -235,7 +238,14 @@ class PetServiceImpl : PetService {
         return emptyList();
     }
 
-    override fun findToPet(
+    override fun findToPet(): List<SelectPets> {
+        var findList : List<SelectPets> = petRepo.findAll()
+        val list = ArrayList<SelectPets>()
+        println(findList.toString())
+        return findList
+    }
+
+    override fun addToPet(
         Start: String,
         end: String,
         kindCode: String,
@@ -245,10 +255,9 @@ class PetServiceImpl : PetService {
         centerCode: String,
         state: String,
         neuter: String
-    ): List<SelectPets> {
+    ): Unit {
         val findGungu:GunGu = gunguRepo.findBySiNameAndGunguName(si,gungu)
         val findCenter:Center = centerRepo.findByCenterNameAndGunguName(centerCode,gungu)
-        println(findCenter.centerCode)
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D")
         urlBuilder.append("&" + URLEncoder.encode("bgnde","UTF-8") + "=" + URLEncoder.encode(Start, "UTF-8")); /*페이지 번호*/
@@ -264,7 +273,6 @@ class PetServiceImpl : PetService {
         urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("20", "UTF-8")); /*한 페이지 결과 수(1,000 이하)*/
         urlBuilder.append("&" + URLEncoder.encode("_type","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml(기본값) 또는 json*/
         val url = URL(urlBuilder.toString())
-        println(url.toString())
         val conn:HttpURLConnection = url.openConnection() as HttpURLConnection
         val input = conn.getInputStream()
         val isr = InputStreamReader(input)
@@ -283,21 +291,25 @@ class PetServiceImpl : PetService {
         val root = JSONObject(buf.toString())
         val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-        var list = ArrayList<SelectPets>()
+
         for(i in 0 until item.length()){
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i);
-            select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
-            select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
-            select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
-            select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
-            select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
-            select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
-            select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
-            select.age = jsonObject.getString("age")
-            list.add(select)
+            var find: String? = petRepo.findByDesertionNo(jsonObject.getString("desertionNo"))
+            println(find)
+            if(find==null){
+                select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
+                select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+                select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
+                select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
+                select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
+                select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
+                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+                select.age = jsonObject.getString("age")
+                println(select.happenPlace)
+                petRepo.save(select)
+            }
         }
-        return list
     }
 
 }

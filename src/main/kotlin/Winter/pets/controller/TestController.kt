@@ -6,6 +6,7 @@ import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.CatRepository
 import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException
 
 import io.swagger.v3.oas.annotations.Operation
 import org.json.JSONArray
@@ -126,24 +127,33 @@ class TestController {
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-    @Operation(summary = "유기동물 찾기")
+    @Operation(summary = "유기동물 서버 저장")
     @PostMapping("find/abandonded")
     fun findToPet(@RequestParam("start_time")start:String,@RequestParam("end_time")end:String,@RequestParam("kind_code")kindCode:String,
     @RequestParam("kind")kind:String,@RequestParam("si_code")si:String,@RequestParam("gungu_code")gungu:String,@RequestParam("center")center:String,
-    @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<Any>{
+    @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<String>{
         try{
-            var list:List<SelectPets>
             if(kindCode.equals("417000")){
                 var findDog:Dog = dogRepo.findByDogName(kind);
-                list = petService.findToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
-                return ResponseEntity.ok().body(list);
+                petService.addToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body("저장완료");
             }
             else{
                 var findCat:Cat = catRepo.findByCatName(kind);
-                list = petService.findToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
-                return ResponseEntity.ok().body(list);
+                petService.addToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body("저장완료");
             }
         }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
+    }
+    @Operation(summary = "유기동물 전체 조회 // DB 저장 되어있는 것만")
+    @GetMapping("find/all")
+    fun findAll():ResponseEntity<Any>{
+        try{
+            var list: List<SelectPets> = petService.findToPet()
+            return ResponseEntity.ok().body(list)
+        }catch (e :RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
