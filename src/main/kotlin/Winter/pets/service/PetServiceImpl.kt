@@ -249,12 +249,13 @@ class PetServiceImpl : PetService {
         }
         return emptyList();
     }
-
-    override fun findToPet(pageable: Pageable): Page<SelectPets> {
-        var findList : Page<SelectPets> = petRepo.findAll(pageable)
+    //저장된 유기동물 전체 조회시 paging 통해 오래된 동물부터
+    override fun findToPet(page:Int,size:Int): List<SelectPets> {
+        var request :PageRequest = PageRequest.of(page,size, Sort.by("happenDt").ascending())
+        var findList : List<SelectPets> = petRepo.findAll(request).content
         return findList
     }
-
+    // 유기동물 조회 및 db 저장 기능 및 날짜 파싱
     override fun addToPet(
         Start: String,
         end: String,

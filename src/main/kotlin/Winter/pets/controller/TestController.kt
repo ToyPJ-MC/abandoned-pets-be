@@ -149,9 +149,9 @@ class TestController {
     }
     @Operation(summary = "유기동물 전체 조회 // DB 저장 되어있는 것만")
     @GetMapping("find/all")
-    fun findAll(pageable: Pageable):ResponseEntity<Any>{
+    fun findAll(@RequestParam("page")page:Int,@RequestParam("size")size:Int):ResponseEntity<Any>{
         try{
-            var list: Page<SelectPets> = petService.findToPet(pageable)
+            var list: List<SelectPets> = petService.findToPet(page,size)
             return ResponseEntity.ok().body(list)
         }catch (e :RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
