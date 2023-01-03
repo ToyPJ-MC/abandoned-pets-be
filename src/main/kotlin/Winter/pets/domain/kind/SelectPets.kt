@@ -1,5 +1,6 @@
 package Winter.pets.domain.kind
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import lombok.Data
 import javax.persistence.*
 

@@ -16,7 +16,19 @@ import java.net.URL
 import java.net.URLEncoder
 import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.format.annotation.DateTimeFormat
 import java.net.HttpURLConnection
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.text.StringBuilder
 
 @Service @Slf4j
@@ -238,10 +250,8 @@ class PetServiceImpl : PetService {
         return emptyList();
     }
 
-    override fun findToPet(): List<SelectPets> {
-        var findList : List<SelectPets> = petRepo.findAll()
-        val list = ArrayList<SelectPets>()
-        println(findList.toString())
+    override fun findToPet(pageable: Pageable): Page<SelectPets> {
+        var findList : Page<SelectPets> = petRepo.findAll(pageable)
         return findList
     }
 
@@ -295,15 +305,22 @@ class PetServiceImpl : PetService {
         for(i in 0 until item.length()){
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i);
+
             var find: String? = petRepo.findByDesertionNo(jsonObject.getString("desertionNo"))
             if(find==null){
+                var dtformat = SimpleDateFormat("yyyyMMdd")
+                var format = SimpleDateFormat("yyyy-MM-dd")
+                var formatDate : Date =dtformat.parse(jsonObject.getString("happenDt"))
+                var date:String = format.format(formatDate)
+                var formatNotice : Date = dtformat.parse(jsonObject.getString("noticeSdt"))
+                var dates:String = format.format(formatNotice)
                 select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
-                select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+                select.processState = jsonObject.getString("processState");select.noticeSdt =dates;select.careAddr = jsonObject.getString("careAddr")
                 select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
                 select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
                 select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
                 select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
-                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = date
                 select.age = jsonObject.getString("age")
                 petRepo.save(select)
             }

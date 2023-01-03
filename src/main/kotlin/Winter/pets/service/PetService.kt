@@ -1,10 +1,7 @@
 package Winter.pets.service
-
-import Winter.pets.domain.Country.GunGu
-import Winter.pets.domain.Country.Si
 import Winter.pets.domain.kind.SelectPets
-import org.json.JSONArray
-import org.json.JSONObject
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 interface PetService {
 
@@ -20,6 +17,6 @@ interface PetService {
     fun findToKind(kindName:String):List<String>
     fun addToPet(Start:String,end:String,kindCode:String,kind:String,
                   si:String,gungu:String,centerCode:String,state:String,neuter:String): List<SelectPets>
-    fun findToPet():List<SelectPets>
+    fun findToPet(pageable: Pageable): Page<SelectPets>
 
 }

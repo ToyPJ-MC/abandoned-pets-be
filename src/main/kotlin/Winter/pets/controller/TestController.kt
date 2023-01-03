@@ -6,12 +6,11 @@ import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.CatRepository
 import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
-import com.fasterxml.jackson.databind.RuntimeJsonMappingException
 
 import io.swagger.v3.oas.annotations.Operation
-import org.json.JSONArray
-import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -150,9 +149,9 @@ class TestController {
     }
     @Operation(summary = "유기동물 전체 조회 // DB 저장 되어있는 것만")
     @GetMapping("find/all")
-    fun findAll():ResponseEntity<Any>{
+    fun findAll(pageable: Pageable):ResponseEntity<Any>{
         try{
-            var list: List<SelectPets> = petService.findToPet()
+            var list: Page<SelectPets> = petService.findToPet(pageable)
             return ResponseEntity.ok().body(list)
         }catch (e :RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
