@@ -19,7 +19,7 @@ interface PetService {
     fun addToKind(kindName:String):Unit
     fun findToKind(kindName:String):List<String>
     fun addToPet(Start:String,end:String,kindCode:String,kind:String,
-                  si:String,gungu:String,centerCode:String,state:String,neuter:String): Unit
+                  si:String,gungu:String,centerCode:String,state:String,neuter:String): List<SelectPets>
     fun findToPet():List<SelectPets>
 
 }

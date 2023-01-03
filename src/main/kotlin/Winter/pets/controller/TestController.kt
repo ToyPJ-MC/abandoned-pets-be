@@ -127,21 +127,22 @@ class TestController {
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-    @Operation(summary = "유기동물 서버 저장")
+    @Operation(summary = "유기동물 서버 저장 및 조회 기능")
     @PostMapping("find/abandonded")
     fun findToPet(@RequestParam("start_time")start:String,@RequestParam("end_time")end:String,@RequestParam("kind_code")kindCode:String,
     @RequestParam("kind")kind:String,@RequestParam("si_code")si:String,@RequestParam("gungu_code")gungu:String,@RequestParam("center")center:String,
-    @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<String>{
+    @RequestParam("state")state:String,@RequestParam("neuter")neuter:String):ResponseEntity<Any>{
         try{
+            var list:List<SelectPets>
             if(kindCode.equals("417000")){
                 var findDog:Dog = dogRepo.findByDogName(kind);
-                petService.addToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
-                return ResponseEntity.ok().body("저장완료");
+                list = petService.addToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body(list);
             }
             else{
                 var findCat:Cat = catRepo.findByCatName(kind);
-                petService.addToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
-                return ResponseEntity.ok().body("저장완료");
+                list = petService.addToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
+                return ResponseEntity.ok().body(list);
             }
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")

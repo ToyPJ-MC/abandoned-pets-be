@@ -255,7 +255,7 @@ class PetServiceImpl : PetService {
         centerCode: String,
         state: String,
         neuter: String
-    ): Unit {
+    ): List<SelectPets> {
         val findGungu:GunGu = gunguRepo.findBySiNameAndGunguName(si,gungu)
         val findCenter:Center = centerRepo.findByCenterNameAndGunguName(centerCode,gungu)
         var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
@@ -296,7 +296,6 @@ class PetServiceImpl : PetService {
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i);
             var find: String? = petRepo.findByDesertionNo(jsonObject.getString("desertionNo"))
-            println(find)
             if(find==null){
                 select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
                 select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
@@ -306,10 +305,24 @@ class PetServiceImpl : PetService {
                 select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
                 select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
                 select.age = jsonObject.getString("age")
-                println(select.happenPlace)
                 petRepo.save(select)
             }
         }
+        var list = ArrayList<SelectPets>()
+        for(i in 0 until item.length()){
+            var select = SelectPets()
+            val jsonObject = item.getJSONObject(i)
+            select.sexCd = jsonObject.getString("sexCd");select.kindCd=jsonObject.getString("kindCd");select.noticeNo=jsonObject.getString("noticeNo")
+            select.processState = jsonObject.getString("processState");select.noticeSdt =jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+            select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
+            select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
+            select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
+            select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
+            select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+            select.age = jsonObject.getString("age")
+            list.add(select)
+        }
+        return list
     }
 
 }
