@@ -1,5 +1,6 @@
 package Winter.pets.controller
 
+import Winter.pets.domain.kind.AddPets
 import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
 import Winter.pets.domain.kind.SelectPets
@@ -8,6 +9,7 @@ import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
 
 import io.swagger.v3.oas.annotations.Operation
+import net.bytebuddy.build.Plugin.Engine.Summary
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -126,7 +128,7 @@ class TestController {
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-    @Operation(summary = "유기동물 서버 저장 및 조회 기능")
+    @Operation(summary = "유기동물 조회 기능")
     @PostMapping("find/abandonded")
     fun findToPet(@RequestParam("start_time")start:String,@RequestParam("end_time")end:String,@RequestParam("kind_code")kindCode:String,
     @RequestParam("kind")kind:String,@RequestParam("si_code")si:String,@RequestParam("gungu_code")gungu:String,@RequestParam("center")center:String,
@@ -135,12 +137,12 @@ class TestController {
             var list:List<SelectPets>
             if(kindCode.equals("417000")){
                 var findDog:Dog = dogRepo.findByDogName(kind);
-                list = petService.addToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
+                list = petService.selectToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
                 return ResponseEntity.ok().body(list);
             }
             else{
                 var findCat:Cat = catRepo.findByCatName(kind);
-                list = petService.addToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
+                list = petService.selectToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
                 return ResponseEntity.ok().body(list);
             }
         }catch (e:RuntimeException){
@@ -151,7 +153,7 @@ class TestController {
     @GetMapping("find/all")
     fun findAll(@RequestParam("page")page:Int,@RequestParam("size")size:Int):ResponseEntity<Any>{
         try{
-            var list: List<SelectPets> = petService.findToPet(page,size)
+            var list: List<AddPets> = petService.findToPet(page,size)
             return ResponseEntity.ok().body(list)
         }catch (e :RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
@@ -162,5 +164,27 @@ class TestController {
     fun findToPage():ResponseEntity<Any>{
         var page = petService.findToMaxPage()
         return ResponseEntity.ok(page)
+    }
+
+    @Operation(summary = "유기 동물 db 저장")
+    @PostMapping("/add/pets")
+    fun addToPet():ResponseEntity<String>{
+        try{
+            petService.addToPet()
+            return ResponseEntity.ok().body("저장완료")
+        }catch (e : RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
+    }
+
+    @Operation(summary="최근 검색 기록")
+    @PostMapping("/find/search")
+    fun findToSearchList():ResponseEntity<Any>{
+        try{
+            var list = petService.findToSearchList()
+            return ResponseEntity.ok().body(list)
+        }catch (e : RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
     }
 }

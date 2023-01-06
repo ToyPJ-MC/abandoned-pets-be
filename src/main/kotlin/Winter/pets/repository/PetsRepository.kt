@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface PetsRepository : JpaRepository<SelectPets,Long> {
-    fun findByDesertionNo (desertion : String): String?{
-        return "null"
-    }
+
 }
