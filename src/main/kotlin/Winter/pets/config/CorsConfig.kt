@@ -17,7 +17,7 @@ class CorsConfig : WebMvcConfigurer {
             .maxAge(3000);
     }
     override fun configureAsyncSupport(confiqurer : AsyncSupportConfigurer):Unit {
-        confiqurer.setDefaultTimeout(20000)
+        confiqurer.setDefaultTimeout(100000)
         confiqurer.registerCallableInterceptors(timeoutInterceptor())
     }
     fun timeoutInterceptor():TimeoutCallableProcessingInterceptor{

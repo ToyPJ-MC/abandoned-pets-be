@@ -6,4 +6,4 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
     async:
-      request-timeout: 20000
+      request-timeout: 100000

@@ -255,6 +255,14 @@ class PetServiceImpl : PetService {
         var findList : List<SelectPets> = petRepo.findAll(request).content
         return findList
     }
+
+    override fun findToMaxPage(): String {
+        var findPage = petRepo.findAll()
+        var size = findPage.size
+        if(size%6==0) return size.toString()
+        return (size/6+1).toString()
+    }
+
     // 유기동물 조회 및 db 저장 기능 및 날짜 파싱
     override fun addToPet(
         Start: String,

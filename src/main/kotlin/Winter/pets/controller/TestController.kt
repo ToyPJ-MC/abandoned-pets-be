@@ -157,4 +157,10 @@ class TestController {
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
+    @Operation(summary = "맥스 페이지 조회")
+    @GetMapping("/find/page")
+    fun findToPage():ResponseEntity<Any>{
+        var page = petService.findToMaxPage()
+        return ResponseEntity.ok(page)
+    }
 }
