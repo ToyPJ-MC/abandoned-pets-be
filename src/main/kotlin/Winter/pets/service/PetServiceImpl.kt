@@ -338,7 +338,7 @@ class PetServiceImpl : PetService {
         }
         return emptyList();
     }
-
+   //************************** 유기동물 select 조회 ***************************//
     override fun selectToPet(
         Start: String,
         end: String,
@@ -444,6 +444,7 @@ class PetServiceImpl : PetService {
             select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
             select.age = jsonObject.getString("age")
             list.add(select)
+            petRepo.save(select)
         }
         return list
     }
@@ -454,12 +455,11 @@ class PetServiceImpl : PetService {
         var findList: List<AddPets> = addPetRepo.findAll(request).content
         return findList
     }
-
+    //******************************* db Max Page 조회****************************//
     override fun findToMaxPage(): String {
         var findPage = addPetRepo.findAll()
         var size = findPage.size
-        if (size % 6 == 0) return size.toString()
-        return (size / 6 + 1).toString()
+        return (size/6).toString()
     }
 
     /******************************유기동물 db 저장 ********************************/
