@@ -14,13 +14,15 @@ import java.net.URLEncoder
 import org.json.JSONObject
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.text.StringBuilder
 
-@Service
+@Service @EnableScheduling
 class PetServiceImpl(
     private val petRepo: PetsRepository,
     private val addPetRepo: AddToPetRepository,
@@ -151,8 +153,9 @@ class PetServiceImpl(
         var size = findPage.size
         return (size/6).toString()
     }
-
+    @Scheduled(cron="0 02 12 * * *")
     /******************************유기동물 db 저장 ********************************/
+    /*****************매주 12시 2분에 db insert 시작******************/
     override fun addToPet() {
         for(i in 1 until 100){
             var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
@@ -228,7 +231,8 @@ class PetServiceImpl(
         var list:List<SelectPets> = petRepo.findAll()
         return list
     }
-
+    /*****************매주 12시 정각 db delete 시작******************/
+    @Scheduled(cron="0 00 12 * * *")
     override fun deleteToPet() {
         addPetRepo.deleteAll()
     }
