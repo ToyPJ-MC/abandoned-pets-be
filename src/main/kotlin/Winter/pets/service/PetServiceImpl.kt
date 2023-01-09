@@ -228,4 +228,8 @@ class PetServiceImpl(
         var list:List<SelectPets> = petRepo.findAll()
         return list
     }
+
+    override fun deleteToPet() {
+        addPetRepo.deleteAll()
+    }
 }
