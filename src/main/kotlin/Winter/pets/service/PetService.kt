@@ -14,5 +14,6 @@ interface PetService {
     fun findToSearchList():List<SelectPets>
 
     fun deleteToPet():Unit
+    fun deleteToSelectPet():Unit
 
 }

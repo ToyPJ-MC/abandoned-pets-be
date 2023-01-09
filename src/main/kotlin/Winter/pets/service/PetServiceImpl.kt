@@ -155,7 +155,7 @@ class PetServiceImpl(
     }
     @Scheduled(cron="0 02 12 * * *")
     /******************************유기동물 db 저장 ********************************/
-    /*****************매주 12시 2분에 db insert 시작******************/
+    /*****************매일 12시 2분에 db insert 시작******************/
     override fun addToPet() {
         for(i in 1 until 100){
             var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
@@ -226,14 +226,19 @@ class PetServiceImpl(
             }
         }
     }
-  //*********************** 최근 검색 조회 ***********************/
+    /*********************** 최근 검색 조회 ***********************/
     override fun findToSearchList(): List<SelectPets> {
         var list:List<SelectPets> = petRepo.findAll()
         return list
     }
-    /*****************매주 12시 정각 db delete 시작******************/
+    /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")
     override fun deleteToPet() {
         addPetRepo.deleteAll()
+    }
+    /************최근 검색 조회 db 매주 월요일 12시 05분 delete 기능****************/
+    @Scheduled(cron="0 05 12 * JAN *") //순서별로 초 분 시 일 월 요일 년(생략가능)
+    override fun deleteToSelectPet() {
+        petRepo.deleteAll()
     }
 }

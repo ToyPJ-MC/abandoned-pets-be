@@ -78,15 +78,4 @@ class PetController(
         }
     }
 
-    @Operation(summary="db 최신화시키기 위해 저장된 pet delete 기능")
-    @PostMapping("/delete")
-    fun deleteToPet(): ResponseEntity<Any> {
-        try{
-            petService.deleteToPet()
-            return ResponseEntity.ok().body("delete 완료")
-        }catch (e : RuntimeException){
-            return ResponseEntity.badRequest().body("잘못된 조회")
-        }
-    }
-
 }
