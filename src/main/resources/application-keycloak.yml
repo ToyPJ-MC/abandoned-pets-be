@@ -1,0 +1,6 @@
+keycloak:
+  auth-server-url: https://auth.megabrain.kr/
+  realm: Spring-test
+  resource: Spring-demo
+  creadentials.secret: 123
+  use-resource-role-mapping: true

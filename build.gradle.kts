@@ -30,7 +30,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.6")
 	implementation("mysql:mysql-connector-java:8.0.31")
 	compileOnly("org.projectlombok:lombok")
-
+	implementation("org.keycloak:keycloak-spring-security-adapter:19.0.3")
+	implementation("com.googlecode.json-simple:json-simple:1.1.1")
+	implementation("org.thymeleaf:thymeleaf:3.0.15.RELEASE")
+	//implementation("org.keycloak:keycloak-admin-client:19.0.3") //키클락
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
