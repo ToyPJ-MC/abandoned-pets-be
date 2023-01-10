@@ -149,8 +149,8 @@ class PetServiceImpl(
     }
     //******************************* db Max Page 조회****************************//
     override fun findToMaxPage(): String {
-        var findPage = addPetRepo.findAll()
-        var size = findPage.size
+        var findPage = addPetRepo.findAll().size
+        var size = findPage
         return (size/6).toString()
     }
     @Scheduled(cron="0 02 12 * * *")
@@ -240,5 +240,10 @@ class PetServiceImpl(
     @Scheduled(cron="0 05 12 * JAN *") //순서별로 초 분 시 일 월 요일 년(생략가능)
     override fun deleteToSelectPet() {
         petRepo.deleteAll()
+    }
+
+    override fun allToPet(): String {
+        val size = addPetRepo.findAll().size
+        return size.toString()
     }
 }

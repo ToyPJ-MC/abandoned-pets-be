@@ -15,5 +15,6 @@ interface PetService {
 
     fun deleteToPet():Unit
     fun deleteToSelectPet():Unit
+    fun allToPet():String
 
 }

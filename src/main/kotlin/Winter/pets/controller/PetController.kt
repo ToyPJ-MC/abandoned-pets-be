@@ -77,5 +77,14 @@ class PetController(
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-
+    @Operation(summary = "총 유기동물 수 조회")
+    @GetMapping("/find/size")
+    fun findToAllSize():ResponseEntity<String>{
+        try{
+            var find = petService.allToPet()
+            return ResponseEntity.ok().body(find)
+        }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
+    }
 }
