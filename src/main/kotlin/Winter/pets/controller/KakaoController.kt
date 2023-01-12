@@ -73,6 +73,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             for(i in 0 until cookie.size)
                 if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
             kakaoService.userLogOut(token.toString())
+
             return ResponseEntity.ok().body("http://localhost:5173")
         }catch (e: RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
