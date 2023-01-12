@@ -15,7 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/api")
+        registry.addMapping("/**")
+            .allowedOriginPatterns("http://localhost:5173")
             .allowedOrigins("http://localhost:8080")
             .allowedOrigins("http://localhost:5173")
             .allowCredentials(true)
@@ -37,6 +38,7 @@ class CorsConfig : WebMvcConfigurer {
         cors.addAllowedOrigin("http://localhost:8080")
         cors.addAllowedMethod("*")
         cors.addAllowedHeader("*")
+        cors.allowCredentials = true
         cors.setMaxAge(7200L)
         val url =UrlBasedCorsConfigurationSource()
         url.registerCorsConfiguration("/**",cors)

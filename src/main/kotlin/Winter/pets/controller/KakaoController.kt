@@ -2,6 +2,7 @@ package Winter.pets.controller
 
 import Winter.pets.domain.jwt.KakaoService
 import io.swagger.v3.oas.annotations.Operation
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -9,7 +10,6 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@CrossOrigin("http://localhost:8080 ,withCredentials = true")
 @RequestMapping("/api")
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
@@ -19,28 +19,26 @@ class KakaoController(private val kakaoService: KakaoService) {
 
         println("code = $code")
         val token =kakaoService.getToken(code)
-        val ac = Cookie("access_token",token.accessToken)
-        ac.maxAge = token.accessExpiresIn
-        ac.secure =true
-        ac.path="/"
+        val access_token:ResponseCookie = ResponseCookie.from("access_token", token.accessToken.toString())
+            .maxAge(token.accessExpiresIn.toLong())
+            .httpOnly(true)
+            .sameSite("None")
+            .secure(true)
+            .path("/")
+            .domain("localhost")
+            .build()
 
-        ac.isHttpOnly = true
-
-        response.addCookie(ac)
-        response.setHeader("Set_accessToken", ac.value)
-
-        val re = Cookie("refresh_token",token.refreshToken)
-        re.maxAge = token.refreshExpiresIn
-        re.secure = true
-        re.isHttpOnly = true
-        
-        re.path="/"
-        response.addCookie(re)
-        response.setHeader("Set_refreshToken",re.value)
-
-        return ResponseEntity.ok().header("Set_accessToken",ac.value.toString())
-            .header("Set_refreshToken",re.value.toString())
-            .body("저장됨")
+        val refresh_token:ResponseCookie = ResponseCookie.from("refresh_token", token.refreshToken.toString())
+            .maxAge(token.accessExpiresIn.toLong())
+            .httpOnly(true)
+            .sameSite("None")
+            .secure(true)
+            .path("/")
+            .domain("localhost")
+            .build()
+        response.addHeader("access_token",access_token.toString())
+        response.addHeader("refresh_token",refresh_token.toString())
+        return ResponseEntity.ok().body("헤더에 쿠키 저장")
     }
     @Operation(summary = "access_token으로 유저 정보 요청")
     @GetMapping("/user/info")
