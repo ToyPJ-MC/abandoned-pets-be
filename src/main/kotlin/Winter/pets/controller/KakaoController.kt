@@ -29,7 +29,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             .httpOnly(true)
             .build()*/
         response.addCookie(ac)
-        response.setHeader("set_accessToken", ac.toString())
+        response.setHeader("set_accessToken", ac.value)
 
         /*val refresh_cookie: ResponseCookie = ResponseCookie.from("refresh_token", token.refreshToken.toString())
             .maxAge(token.refreshExpiresIn.toLong())
@@ -41,7 +41,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         re.secure = true
         re.isHttpOnly = true
         response.addCookie(re)
-        response.setHeader("set_refreshToken",re.toString())
+        response.setHeader("set_refreshToken",re.value)
 
         val jwtToken = "NOT_AVAILABLE"
 
@@ -65,7 +65,7 @@ class KakaoController(private val kakaoService: KakaoService) {
            val cookie = request.cookies
            var token:String?=null
            for(i in 0 until cookie.size)
-               if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
+               if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
 
            val get = kakaoService.getAgreementInfo(token.toString())
            return ResponseEntity.ok().body(get)
