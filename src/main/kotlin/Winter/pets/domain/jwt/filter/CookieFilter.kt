@@ -13,8 +13,8 @@ class CookieFilter(private val kakaoService: KakaoService) : Filter {
 
         val cookie_response:HttpServletResponse = response as HttpServletResponse
         val cookie_request:HttpServletRequest = request as HttpServletRequest
-        val access_token = cookie_response.getHeader("access_token")
-        val refresh_token = cookie_response.getHeader("refresh_token")
+        val access_token = cookie_response.getHeader("Set_accessToken")
+        val refresh_token = cookie_response.getHeader("Set_refreshToken")
         val servletPath = request.servletPath
 
         cookie_response.setHeader("Access-Control-Allow-Origin", "https://localhost:5173");

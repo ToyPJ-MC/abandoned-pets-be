@@ -25,7 +25,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         ac.isHttpOnly = true
 
         response.addCookie(ac)
-        response.setHeader("set_accessToken", ac.value)
+        response.setHeader("Set_accessToken", ac.value)
 
         val re = Cookie("refresh_token",token.refreshToken)
         re.maxAge = token.refreshExpiresIn
@@ -33,26 +33,33 @@ class KakaoController(private val kakaoService: KakaoService) {
         re.isHttpOnly = true
 
         response.addCookie(re)
-        response.setHeader("set_refreshToken",re.value)
+        response.setHeader("Set_refreshToken",re.value)
 
-        return ResponseEntity.ok().body("저장됨")
+        return ResponseEntity.ok().header("Set_accessToken",ac.value.toString())
+            .header("Set_refreshToken",re.value.toString())
+            .body("저장됨")
     }
     @Operation(summary = "access_token으로 유저 정보 요청")
     @GetMapping("/user/info")
     fun getUserinfo(request: HttpServletRequest):ResponseEntity<Any>{
         val cookie = request.cookies
         var token:String?=null
-        for(i in 0 until cookie.size)
-            if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
-
-        val getUser:HashMap<String,Any> = kakaoService.getUserInfo(token.toString()) as HashMap<String, Any>
+        for(i in 0 until cookie.size){
+            if(cookie.get(i).name.equals("access_token"))token=cookie.get(i).value
+        }
+        val getUser: Map<String, Any> = kakaoService.getUserInfo(token.toString())
         return ResponseEntity.ok().body(getUser)
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
-    fun getUserAgree(@CookieValue("access_token")access_token:String):ResponseEntity<Any>{
+    fun getUserAgree(request: HttpServletRequest):ResponseEntity<Any>{
        try{
-           val get = kakaoService.getAgreementInfo(access_token)
+           val cookie = request.cookies
+           var token:String?=null
+           for(i in 0 until cookie.size){
+               if(cookie.get(i).name.equals("access_token"))token=cookie.get(i).value
+           }
+           val get = kakaoService.getAgreementInfo(token.toString())
            return ResponseEntity.ok().body(get)
        }catch (e : RuntimeException){
            return ResponseEntity.badRequest().body("잘못된 조회")
@@ -60,10 +67,14 @@ class KakaoController(private val kakaoService: KakaoService) {
     }
     @Operation(summary = "로그 아웃")
     @PostMapping("/user/logout")
-    fun getUserLogOut(@CookieValue("access_token")access_token:String):ResponseEntity<Any>{
+    fun getUserLogOut(request: HttpServletRequest):ResponseEntity<Any>{
         try{
-
-            kakaoService.userLogOut(access_token)
+            val cookie = request.cookies
+            var token:String?=null
+            for(i in 0 until cookie.size){
+                if(cookie.get(i).name.equals("access_token"))token=cookie.get(i).value
+            }
+            kakaoService.userLogOut(token.toString())
 
             return ResponseEntity.ok().body("http://localhost:5173")
         }catch (e: RuntimeException){
