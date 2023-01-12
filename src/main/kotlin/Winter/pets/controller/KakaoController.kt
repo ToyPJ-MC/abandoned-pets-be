@@ -19,20 +19,29 @@ class KakaoController(private val kakaoService: KakaoService) {
 
         println("code = $code")
         val token =kakaoService.getToken(code)
-
-        val access_cookie: ResponseCookie = ResponseCookie.from("acess_token", token.accessToken.toString())
+        val ac = Cookie("accessToken",token.accessToken)
+        ac.maxAge = token.accessExpiresIn
+        ac.secure =true
+        ac.isHttpOnly = true
+       /* val access_cookie: ResponseCookie = ResponseCookie.from("acess_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
             .secure(true)
             .httpOnly(true)
-            .build()
-        response.setHeader("set_accessToken", access_cookie.toString())
+            .build()*/
+        response.addCookie(ac)
+        response.setHeader("set_accessToken", ac.toString())
 
-        val refresh_cookie: ResponseCookie = ResponseCookie.from("refresh_token", token.refreshToken.toString())
+        /*val refresh_cookie: ResponseCookie = ResponseCookie.from("refresh_token", token.refreshToken.toString())
             .maxAge(token.refreshExpiresIn.toLong())
             .secure(true)
             .httpOnly(true)
-            .build()
-        response.setHeader("set_refreshToken",refresh_cookie.toString())
+            .build()*/
+        val re = Cookie("refreshToken",token.refreshToken)
+        re.maxAge = token.refreshExpiresIn
+        re.secure = true
+        re.isHttpOnly = true
+        response.addCookie(re)
+        response.setHeader("set_refreshToken",re.toString())
 
         val jwtToken = "NOT_AVAILABLE"
 
