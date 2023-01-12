@@ -243,7 +243,7 @@ class PetServiceImpl(
     }
 
     override fun allToPet(): String {
-        val size = addPetRepo.findAll().size
+        val size = addPetRepo.findAll().size -1
         return size.toString()
     }
 }
