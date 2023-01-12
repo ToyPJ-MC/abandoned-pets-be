@@ -9,7 +9,7 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@CrossOrigin("http://203.241.228.50:18080/swagger-ui/# ,withCredentials = true")
+@CrossOrigin("http://203.241.228.50:18080 ,withCredentials = true")
 @RequestMapping("/api")
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
@@ -22,7 +22,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         val ac = Cookie("access_token",token.accessToken)
         ac.maxAge = token.accessExpiresIn
         ac.secure =true
-        ac.domain = "http://203.241.228.50:18000"
+        ac.domain = "http://localhost:5173"
         ac.isHttpOnly = true
 
         response.addCookie(ac)
@@ -32,7 +32,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         re.maxAge = token.refreshExpiresIn
         re.secure = true
         re.isHttpOnly = true
-        re.domain = "http://203.241.228.50:18000"
+        re.domain = "http://localhost:5173"
         response.addCookie(re)
         response.setHeader("Set_refreshToken",re.value)
 
