@@ -11,8 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
-            .allowedOrigins("*")
+        registry.addMapping("/api")
+            .allowedOrigins("http://203.241.228.50:18000/swagger-ui/#")
+            .allowedOrigins("http://localhost:5173")
             .allowedMethods("*")
 
             .maxAge(3000);
