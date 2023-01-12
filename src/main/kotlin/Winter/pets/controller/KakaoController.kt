@@ -9,7 +9,7 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@CrossOrigin("http://192.168.0.16:8080")
+@CrossOrigin("http://203.241.228.50:18080 ,withCredentials = true")
 @RequestMapping("/api")
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {

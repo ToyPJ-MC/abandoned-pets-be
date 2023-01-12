@@ -14,6 +14,7 @@ class CorsConfig : WebMvcConfigurer {
         registry.addMapping("/**")
             .allowedOrigins("*")
             .allowedMethods("*")
+
             .maxAge(3000);
     }
     override fun configureAsyncSupport(confiqurer : AsyncSupportConfigurer):Unit {
