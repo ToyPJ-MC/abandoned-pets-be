@@ -23,7 +23,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         ac.maxAge = token.accessExpiresIn
         ac.secure =true
         ac.path="/"
-        ac.domain = "localhost:5173"
+
         ac.isHttpOnly = true
 
         response.addCookie(ac)
@@ -33,7 +33,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         re.maxAge = token.refreshExpiresIn
         re.secure = true
         re.isHttpOnly = true
-        re.domain = "localhost:5173"
+        
         re.path="/"
         response.addCookie(re)
         response.setHeader("Set_refreshToken",re.value)
