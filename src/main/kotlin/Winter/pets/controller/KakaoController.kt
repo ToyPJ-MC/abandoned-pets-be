@@ -19,7 +19,7 @@ class KakaoController(private val kakaoService: KakaoService) {
 
         println("code = $code")
         val token =kakaoService.getToken(code)
-        val ac = Cookie("accessToken",token.accessToken)
+        val ac = Cookie("access_token",token.accessToken)
         ac.maxAge = token.accessExpiresIn
         ac.secure =true
         ac.isHttpOnly = true
@@ -36,7 +36,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             .secure(true)
             .httpOnly(true)
             .build()*/
-        val re = Cookie("refreshToken",token.refreshToken)
+        val re = Cookie("refresh_token",token.refreshToken)
         re.maxAge = token.refreshExpiresIn
         re.secure = true
         re.isHttpOnly = true
@@ -53,7 +53,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         val cookie = request.cookies
         var token:String?=null
         for(i in 0 until cookie.size)
-            if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
+            if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
 
         val getUser:HashMap<String,Any> = kakaoService.getUserInfo(token.toString()) as HashMap<String, Any>
         return ResponseEntity.ok().body(getUser)
@@ -65,7 +65,7 @@ class KakaoController(private val kakaoService: KakaoService) {
            val cookie = request.cookies
            var token:String?=null
            for(i in 0 until cookie.size)
-               if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
+               if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
 
            val get = kakaoService.getAgreementInfo(token.toString())
            return ResponseEntity.ok().body(get)
@@ -80,7 +80,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             val cookie = request.cookies
             var token:String?=null
             for(i in 0 until cookie.size)
-                if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
+                if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
             kakaoService.userLogOut(token.toString())
 
             return ResponseEntity.ok().body("http://localhost:5173")
