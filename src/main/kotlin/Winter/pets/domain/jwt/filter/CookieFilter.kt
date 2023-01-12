@@ -17,8 +17,8 @@ class CookieFilter(private val kakaoService: KakaoService) : Filter {
         val refresh_token = cookie_response.getHeader("Set_refreshToken")
         val servletPath = request.servletPath
 
-        cookie_response.setHeader("Access-Control-Allow-Origin", "https://localhost:5173");
-        cookie_response.setHeader("Access-Control-Allow-Credentials",  "true");
+       /* cookie_response.setHeader("Access-Control-Allow-Origin", "https://localhost:5173");
+        cookie_response.setHeader("Access-Control-Allow-Credentials",  "true");*/
 
         if(servletPath.equals("/api/user/login")){ //login시 검증 안함
             if (chain != null) {
