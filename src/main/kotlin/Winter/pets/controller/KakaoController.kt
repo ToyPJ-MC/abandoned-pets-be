@@ -53,7 +53,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         val cookie = request.cookies
         var token:String?=null
         for(i in 0 until cookie.size)
-            if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
+            if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
 
         val getUser:HashMap<String,Any> = kakaoService.getUserInfo(token.toString()) as HashMap<String, Any>
         return ResponseEntity.ok().body(getUser)
@@ -80,7 +80,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             val cookie = request.cookies
             var token:String?=null
             for(i in 0 until cookie.size)
-                if(cookie.get(i).name.equals("access_token"))token = cookie.get(i).value
+                if(cookie.get(i).name.equals("accessToken"))token = cookie.get(i).value
             kakaoService.userLogOut(token.toString())
 
             return ResponseEntity.ok().body("http://localhost:5173")
