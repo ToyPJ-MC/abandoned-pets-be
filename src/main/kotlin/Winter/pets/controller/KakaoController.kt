@@ -53,8 +53,17 @@ class KakaoController(private val kakaoService: KakaoService) {
     }
     @Operation(summary = "access_token으로 유저 정보 요청")
     @PostMapping("/user/info")
-    fun getUserinfo(@CookieValue("accessToken", required = false)token:String):ResponseEntity<Any>{
-        return ResponseEntity.ok().body(kakaoService.getUserInfo(token))
+    fun getUserinfo(request: HttpServletRequest):ResponseEntity<Any>{
+        try{
+            val cookies : Array<Cookie> = request.cookies
+            var agree:String?=null
+            for (i in 0 until cookies.size)
+                if(cookies[i].name.equals("accessToken"))
+                    agree = kakaoService.getUserInfo(cookies[i].value).toString()
+            return ResponseEntity.ok().body(agree)
+        }catch (e : RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
