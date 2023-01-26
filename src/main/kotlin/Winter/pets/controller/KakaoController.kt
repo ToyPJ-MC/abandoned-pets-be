@@ -19,13 +19,13 @@ class KakaoController(private val kakaoService: KakaoService) {
         println("code = $code")
         val token =kakaoService.getToken(code)
         var accessToken = Cookie("access_token",token.accessToken)
-        accessToken.isHttpOnly = true
+        //accessToken.isHttpOnly = true
         accessToken.maxAge = token.accessExpiresIn
         accessToken.path="/"
         response.addCookie(accessToken)
 
         var refreshToken = Cookie("refresh_token",token.refreshToken)
-        refreshToken.isHttpOnly = true
+        //refreshToken.isHttpOnly = true
         refreshToken.maxAge = token.refreshExpiresIn
         refreshToken.path = "/"
         response.addCookie(refreshToken)
