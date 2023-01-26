@@ -2,8 +2,7 @@ package Winter.pets.controller
 
 import Winter.pets.domain.jwt.KakaoService
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseCookie
+
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.Cookie
@@ -19,37 +18,21 @@ class KakaoController(private val kakaoService: KakaoService) {
 
         println("code = $code")
         val token =kakaoService.getToken(code)
-        val accessToken = Cookie("accessToken",token.accessToken)
+        var accessToken = Cookie("access_token",token.accessToken)
         accessToken.isHttpOnly = true
         accessToken.maxAge = token.accessExpiresIn
         accessToken.path="/"
         response.addCookie(accessToken)
 
-        val refreshToken = Cookie("refreshToken",token.refreshToken)
+        var refreshToken = Cookie("refresh_token",token.refreshToken)
         refreshToken.isHttpOnly = true
         refreshToken.maxAge = token.refreshExpiresIn
         refreshToken.path = "/"
         response.addCookie(refreshToken)
 
-        response.setHeader("Set-Cookie",refreshToken.toString())
-        /*val access_token:ResponseCookie = ResponseCookie.from("access_token", token.accessToken.toString())
-            .maxAge(token.accessExpiresIn.toLong())
-            .httpOnly(true)
-            .sameSite("None")
-            .path("/")
-            .domain("localhost")
-            .build()
+        response.setHeader("Set-Cookie",refreshToken.value)
 
-        val refresh_token:ResponseCookie = ResponseCookie.from("refresh_token", token.refreshToken.toString())
-            .maxAge(token.accessExpiresIn.toLong())
-            .httpOnly(true)
-            .sameSite("None")
-            .path("/")
-            .domain("localhost")
-            .build()
-        response.addHeader("SET_COOKIE",access_token.toString())
-        response.addHeader("set_refresh",refresh_token.toString())*/
-        return ResponseEntity.ok().body(accessToken.value)
+        return ResponseEntity.ok().body("저장")
     }
     @Operation(summary = "access_token으로 유저 정보 요청")
     @PostMapping("/user/info")
