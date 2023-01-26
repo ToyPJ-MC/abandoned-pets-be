@@ -31,6 +31,7 @@ class KakaoController(private val kakaoService: KakaoService) {
         refreshToken.path = "/"
         response.addCookie(refreshToken)
 
+        response.setHeader("Set-Cookie",refreshToken.toString())
         /*val access_token:ResponseCookie = ResponseCookie.from("access_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
             .httpOnly(true)
@@ -48,18 +49,12 @@ class KakaoController(private val kakaoService: KakaoService) {
             .build()
         response.addHeader("SET_COOKIE",access_token.toString())
         response.addHeader("set_refresh",refresh_token.toString())*/
-        return ResponseEntity.ok().body("쿠키 저장됨")
+        return ResponseEntity.ok().body(accessToken.value)
     }
     @Operation(summary = "access_token으로 유저 정보 요청")
-    @GetMapping("/user/info")
-    fun getUserinfo(request: HttpServletRequest):ResponseEntity<Any>{
-        val cookies : Array<Cookie> = request.cookies
-        var map = HashMap<String,Any>()
-
-        for (i in 0 until cookies.size)
-            if(cookies[i].name.equals("accessToken"))
-                map= kakaoService.getUserInfo(cookies[i].value) as HashMap<String, Any>
-        return ResponseEntity.ok().body(map)
+    @PostMapping("/user/info")
+    fun getUserinfo(@CookieValue("accessToken", required = false)token:String):ResponseEntity<Any>{
+        return ResponseEntity.ok().body(kakaoService.getUserInfo(token))
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
