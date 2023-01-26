@@ -3,6 +3,9 @@ package Winter.pets.domain.jwt
 import Winter.pets.domain.member.Member
 import org.json.JSONObject
 import org.json.simple.parser.ParseException
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
+
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -17,7 +20,9 @@ import javax.imageio.IIOException
 
 
 @Service
-class KakaoService {
+class KakaoService(val kakaoProperties: KakaoProperties)
+{
+
     /********* 인가로 토큰 받기 ************/
     fun getToken(code : String):TokenDTO{
         val host = "https://kauth.kakao.com/oauth/token"
@@ -30,11 +35,13 @@ class KakaoService {
             val bw = BufferedWriter(OutputStreamWriter(urlConnection.outputStream))
             val sb:StringBuilder = StringBuilder()
             sb.append("grant_type=authorization_code")
-            sb.append("&client_id=f572e34312b48d6cebb3d5ce372cf2a7")
-            sb.append("&redirect_uri=http://localhost:5173/oauth/kakao/callback")
-            //sb.append("&redirect_uri=http://localhost:8080")
+            //sb.append("&client_id=f572e34312b48d6cebb3d5ce372cf2a7")
+            sb.append("&client_id=",kakaoProperties.client_id)
+            //sb.append("&redirect_uri=http://localhost:5173/oauth/kakao/callback")
+            //sb.append("&redirect_uri=",kakaoProperties.redirect_uri)
+            sb.append("&redirect_uri=http://localhost:8080")
             sb.append("&code=" + code)
-            sb.append("&client_secret=8pDR4lGFWqrXfTZiDkhbBffMXBbCERxi")
+            sb.append("&client_secret=",kakaoProperties.client_secret)
             bw.write(sb.toString())
             bw.flush()
 

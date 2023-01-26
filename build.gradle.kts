@@ -34,6 +34,7 @@ dependencies {
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
 	implementation("org.thymeleaf:thymeleaf:3.0.15.RELEASE")
 	//implementation("org.keycloak:keycloak-admin-client:19.0.3") //키클락
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
