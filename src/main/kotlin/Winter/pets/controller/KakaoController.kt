@@ -22,11 +22,13 @@ class KakaoController(private val kakaoService: KakaoService) {
         val accessToken = Cookie("accessToken",token.accessToken)
         accessToken.isHttpOnly = true
         accessToken.maxAge = token.accessExpiresIn
+        accessToken.path="/"
         response.addCookie(accessToken)
 
         val refreshToken = Cookie("refreshToken",token.refreshToken)
         refreshToken.isHttpOnly = true
         refreshToken.maxAge = token.refreshExpiresIn
+        refreshToken.path = "/"
         response.addCookie(refreshToken)
 
         /*val access_token:ResponseCookie = ResponseCookie.from("access_token", token.accessToken.toString())
