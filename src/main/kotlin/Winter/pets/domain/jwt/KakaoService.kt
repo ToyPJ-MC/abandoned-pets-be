@@ -31,7 +31,7 @@ class KakaoService {
             val sb:StringBuilder = StringBuilder()
             sb.append("grant_type=authorization_code")
             sb.append("&client_id=f572e34312b48d6cebb3d5ce372cf2a7")
-            sb.append("&redirect_uri=http://localhost:8080")
+            sb.append("&redirect_uri=http://localhost:5173/oauth/kakao/callback")
             sb.append("&code=" + code)
             sb.append("&client_secret=8pDR4lGFWqrXfTZiDkhbBffMXBbCERxi")
             bw.write(sb.toString())
