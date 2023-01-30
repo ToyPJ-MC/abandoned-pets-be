@@ -26,8 +26,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             .maxAge(token.refreshExpiresIn.toLong())
             .sameSite("None")
             .build()
-        response.addHeader("Set-Cookie",accessToken.toString())
-        response.addHeader("Set-Cookie",refreshToken.toString())
+        
         var list  = kakaoService.getUserInfo(token.accessToken.toString())
         return ResponseEntity.ok().header("access_token",accessToken.toString())
             .header("refresh_token",refreshToken.toString())
