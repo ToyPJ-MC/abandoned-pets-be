@@ -9,4 +9,5 @@ class TokenDTO {
     var refreshToken:String?=null
     var accessExpiresIn:Int = 0
     var refreshExpiresIn:Int =0
+    var profilesPic:String?=null
 }

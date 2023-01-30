@@ -61,6 +61,7 @@ class KakaoService(val kakaoProperties: KakaoProperties)
             token.refreshToken = root.get("refresh_token").toString()
             token.refreshExpiresIn = root.get("refresh_token_expires_in") as Int
             token.tokenType = root.get("token_type").toString()
+            token.profilesPic = root.get("profile_image").toString()
             br.close()
             bw.close()
 
