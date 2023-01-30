@@ -21,6 +21,8 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://localhost:5173")
             .allowedOrigins("http://203.241.228.50:18000")
             .allowCredentials(true)
+            .exposedHeaders("access_token")
+            .exposedHeaders("refresh_token")
             .allowedMethods("GET","POST")
             .maxAge(3000);
     }
@@ -31,18 +33,5 @@ class CorsConfig : WebMvcConfigurer {
     fun timeoutInterceptor():TimeoutCallableProcessingInterceptor{
         return TimeoutCallableProcessingInterceptor()
     }
-    @Bean
-    fun corsConfigurationSource() : CorsConfigurationSource{
-        val cors = CorsConfiguration()
-        cors.addAllowedOrigin("http://localhost:5173")
-        cors.addAllowedOrigin("http://localhost:8080")
-        cors.addAllowedMethod("*")
-        cors.addAllowedHeader("*")
-        cors.allowCredentials = true
-        cors.setMaxAge(7200L)
-        val url =UrlBasedCorsConfigurationSource()
-        url.registerCorsConfiguration("/**",cors)
-        return url
 
-    }
 }
