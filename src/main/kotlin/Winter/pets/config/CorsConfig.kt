@@ -38,8 +38,6 @@ class CorsConfig : WebMvcConfigurer {
         cors.addAllowedOrigin("http://localhost:8080")
         cors.addAllowedMethod("*")
         cors.addAllowedHeader("*")
-        cors.addExposedHeader("access_token")
-        cors.addExposedHeader("refresh_token")
         cors.allowCredentials = true
         cors.setMaxAge(7200L)
         val url =UrlBasedCorsConfigurationSource()

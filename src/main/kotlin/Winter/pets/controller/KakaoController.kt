@@ -16,7 +16,7 @@ class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "카카오 로그인 시 토큰 발급 && 쿠키 저장")
     @GetMapping("/user/login")
     fun getToken(@RequestParam("code")code :String,response : HttpServletResponse):ResponseEntity<Any>{
-        
+
         val token =kakaoService.getToken(code)
         var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
