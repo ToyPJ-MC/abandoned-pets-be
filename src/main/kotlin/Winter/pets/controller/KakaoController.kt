@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "카카오 로그인 시 토큰 발급 && 쿠키 저장")
-    @PostMapping("/user/login")
+    @GetMapping("/user/login")
     fun getToken(@RequestParam("code")code :String,response : HttpServletResponse):ResponseEntity<Any>{
 
         println("code = $code")
