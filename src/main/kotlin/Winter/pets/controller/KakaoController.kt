@@ -29,7 +29,9 @@ class KakaoController(private val kakaoService: KakaoService) {
         response.addHeader("Set-Cookie",accessToken.toString())
         response.addHeader("Set-Cookie",refreshToken.toString())
         var list  = kakaoService.getUserInfo(token.accessToken.toString())
-        return ResponseEntity.ok().body(list)
+        return ResponseEntity.ok().header("access_token",accessToken.toString())
+            .header("refresh_token",refreshToken.toString())
+            .body(list)
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
