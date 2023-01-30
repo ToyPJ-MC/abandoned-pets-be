@@ -22,7 +22,6 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://203.241.228.50:18000")
             .allowCredentials(true)
             .allowedMethods("GET","POST")
-
             .maxAge(3000);
     }
     override fun configureAsyncSupport(confiqurer : AsyncSupportConfigurer):Unit {
@@ -39,6 +38,8 @@ class CorsConfig : WebMvcConfigurer {
         cors.addAllowedOrigin("http://localhost:8080")
         cors.addAllowedMethod("*")
         cors.addAllowedHeader("*")
+        cors.addExposedHeader("access_token")
+        cors.addExposedHeader("refresh_token")
         cors.allowCredentials = true
         cors.setMaxAge(7200L)
         val url =UrlBasedCorsConfigurationSource()
