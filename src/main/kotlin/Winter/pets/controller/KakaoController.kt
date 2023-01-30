@@ -26,11 +26,10 @@ class KakaoController(private val kakaoService: KakaoService) {
             .maxAge(token.refreshExpiresIn.toLong())
             .sameSite("None")
             .build()
-        
+        response.setHeader("access_token",accessToken.toString())
+        response.setHeader("refresh_token",refreshToken.toString())
         var list  = kakaoService.getUserInfo(token.accessToken.toString())
-        return ResponseEntity.ok().header("access_token",accessToken.toString())
-            .header("refresh_token",refreshToken.toString())
-            .body(list)
+        return ResponseEntity.ok().body(list)
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
