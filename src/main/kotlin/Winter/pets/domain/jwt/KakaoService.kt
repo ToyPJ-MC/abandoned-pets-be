@@ -56,6 +56,7 @@ class KakaoService(val kakaoProperties: KakaoProperties)
                 if(line != null) buf.append(line)
             }while (line != null)
             val root = JSONObject(buf.toString())
+            println("$root")
             token.accessToken = root.get("access_token").toString()
             token.accessExpiresIn = root.get("expires_in") as Int
             token.refreshToken = root.get("refresh_token").toString()

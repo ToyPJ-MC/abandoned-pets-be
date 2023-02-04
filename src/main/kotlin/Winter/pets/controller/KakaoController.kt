@@ -18,6 +18,7 @@ class KakaoController(private val kakaoService: KakaoService) {
     fun getToken(@RequestParam("code")code :String,response : HttpServletResponse):ResponseEntity<Any>{
 
         val token =kakaoService.getToken(code)
+        println("$token.")
         var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
             .sameSite("None")
@@ -26,8 +27,8 @@ class KakaoController(private val kakaoService: KakaoService) {
             .maxAge(token.refreshExpiresIn.toLong())
             .sameSite("None")
             .build()
-        response.setHeader("access_token",accessToken.toString())
-        response.setHeader("refresh_token",refreshToken.toString())
+        response.setHeader("Set-Cookie",accessToken.value)
+        response.setHeader("Set-Cookie",refreshToken.toString())
         var list  = kakaoService.getUserInfo(token.accessToken.toString())
         return ResponseEntity.ok().body(list)
     }

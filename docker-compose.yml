@@ -1,7 +1,7 @@
 version: '3'
 services:
   abandoned-pets-be:
-    image: abandoned-pets:2.0.1
+    image: abandoned-pets-be:2.0.1
     ports:
       - "18000:8080"
     restart: always
@@ -9,6 +9,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://203.241.228.50:13307/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "mega123"
+  abandoned-pets-fe:
+    image: abandoned-pets-fe:1.0.1
+    ports:
+      - "55173:5173"
+    restart: always
+    environment:
+      VITE_APP_API_URL: http://203.241.228.50:18000/api
 
 
 
