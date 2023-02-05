@@ -22,7 +22,7 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://203.241.228.50:18000")
             .allowedOrigins("http://203.241.228.50:55173")
             .allowCredentials(true)
-            .exposedHeaders("access_token","refresh_token")
+            .exposedHeaders("Set-Cookie")
             .allowedMethods("GET","POST")
             .maxAge(3000);
     }
