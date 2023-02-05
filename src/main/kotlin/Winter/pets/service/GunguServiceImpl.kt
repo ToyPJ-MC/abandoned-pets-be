@@ -76,4 +76,5 @@ class GunguServiceImpl(private val gunguRepo: gunguRepository,
             gunguRepo.save(gungu)
         }
     }
+
 }

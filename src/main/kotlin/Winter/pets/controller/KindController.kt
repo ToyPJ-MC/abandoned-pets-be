@@ -24,7 +24,7 @@ class KindController(private val kindService: KindService) {
             else{
                 val cat= Cat()
                 kindService.addToKind(cat.catCode)
-                return ResponseEntity.ok().body("고양아가 추가되었습니다.")
+                return ResponseEntity.ok().body("고양이가 추가되었습니다.")
             }
 
         }catch (e: RuntimeException){

@@ -13,12 +13,12 @@ class GunGu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gu_id")
     val id:Long?=null;
-    @Column(name = "gu_code")
+    @Column(name = "gu_code",nullable = false)
     var gunguCode:String?=null;
-    @Column(name = "gu_name")
+    @Column(name = "gu_name",nullable = false)
     var gunguName:String?=null;
-    @Column(name="si_code")
+    @Column(name="si_code",nullable = false)
     var siCode:String?=null;
-    @Column(name="si_name")
+    @Column(name="si_name",nullable = false)
     var siName:String?=null
 }
