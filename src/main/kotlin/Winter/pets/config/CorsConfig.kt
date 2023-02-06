@@ -18,7 +18,11 @@ class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("*")
+            .allowedOriginPatterns("http://localhost:5173")
+            .allowedOrigins("http://localhost:8080")
+            .allowedOrigins("http://localhost:5173")
+            .allowedOrigins("http://203.241.228.50:18000")
+            .allowedOrigins("http://203.241.228.50:55173")
             .allowedHeaders("X-Requested-With","X-HTTP-Method-Override","Content-Type","Accept")
             .allowCredentials(true)
             .exposedHeaders(SET_COOKIE)
