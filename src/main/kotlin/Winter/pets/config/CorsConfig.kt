@@ -4,6 +4,7 @@ import io.swagger.models.HttpMethod
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.SET_COOKIE
 import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -17,13 +18,10 @@ class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("http://localhost:5173")
-            .allowedOrigins("http://localhost:8080")
-            .allowedOrigins("http://localhost:5173")
-            .allowedOrigins("http://203.241.228.50:18000")
-            .allowedOrigins("http://203.241.228.50:55173")
+            .allowedOriginPatterns("*")
+            .allowedHeaders("X-Requested-With","X-HTTP-Method-Override","Content-Type","Accept")
             .allowCredentials(true)
-            .exposedHeaders(HttpHeaders.SET_COOKIE,HttpHeaders.LOCATION)
+            .exposedHeaders(SET_COOKIE)
             .allowedMethods("GET","POST","OPTIONS")
             .maxAge(3000);
     }

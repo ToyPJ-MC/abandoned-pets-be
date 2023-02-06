@@ -3,6 +3,7 @@ package Winter.pets.controller
 import Winter.pets.domain.jwt.KakaoService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.SET_COOKIE
 import org.springframework.http.ResponseCookie
 
 import org.springframework.http.ResponseEntity
@@ -15,26 +16,27 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "AccessToken,RefreshToken 발급하기", description = "로그인 시 발급된 인가코드 입력")
-    @GetMapping("/user/login", produces = ["application/json; charset=UTF-8"])
-    fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<Any>{
+    @GetMapping("/user/login")
+    fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<String>{
 
         val token =kakaoService.getToken(code)
         println("$token")
         var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
-            .secure(true)
             .sameSite("None")
             .path("/")
+            .domain("localhost")
             .build()
         var refreshToken = ResponseCookie.from("refresh_token", token.refreshToken.toString())
             .maxAge(token.refreshExpiresIn.toLong())
-            .secure(true)
             .sameSite("None")
             .path("/")
+            .domain("localhost")
             .build()
-        response.setHeader(HttpHeaders.SET_COOKIE,"${accessToken};${refreshToken}")
-        //var list  = kakaoService.getUserInfo(token.accessToken.toString())
-        return ResponseEntity.ok().body("토큰 발급 완료")
+        var headers = HttpHeaders()
+        headers.add(SET_COOKIE,"$accessToken")
+        headers.add(SET_COOKIE,"$refreshToken")
+        return ResponseEntity.ok().headers(headers).body("저장")
     }
     @Operation(summary = "개인정보 불러오기", description = "발급된 accessToken으로 요청")
     @PostMapping("/user/info")
