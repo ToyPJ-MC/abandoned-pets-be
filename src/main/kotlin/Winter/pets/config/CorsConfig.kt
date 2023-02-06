@@ -3,6 +3,7 @@ package Winter.pets.config
 import io.swagger.models.HttpMethod
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -22,7 +23,7 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://203.241.228.50:18000")
             .allowedOrigins("http://203.241.228.50:55173")
             .allowCredentials(true)
-            .exposedHeaders("Set-Cookie")
+            .exposedHeaders(HttpHeaders.SET_COOKIE)
             .allowedMethods("GET","POST","OPTIONS")
             .maxAge(3000);
     }
