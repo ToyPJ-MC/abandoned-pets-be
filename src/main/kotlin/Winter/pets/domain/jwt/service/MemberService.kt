@@ -26,7 +26,8 @@ class MemberService (
     fun findToList(userEmail:String): List<SelectPets> {
        var member = memberRepo.findByEmail(userEmail)
         if (member != null) {
-            return member.list.toList()
+            println("${member.list}")
+            return member.list
         }
         return emptyList()
     }
