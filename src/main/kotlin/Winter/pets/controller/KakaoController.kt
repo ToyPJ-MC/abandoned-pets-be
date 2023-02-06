@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "AccessToken,RefreshToken 발급하기", description = "로그인 시 발급된 인가코드 입력")
-    @GetMapping("/user/login")
+    @GetMapping("/user/login", produces = ["application/json; charset=UTF-8"])
     fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<Any>{
 
         val token =kakaoService.getToken(code)
