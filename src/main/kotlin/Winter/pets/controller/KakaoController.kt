@@ -28,7 +28,7 @@ class KakaoController(private val kakaoService: KakaoService) {
             .maxAge(token.refreshExpiresIn.toLong())
             .sameSite("None")
             .build()
-        response.setHeader("Set-Cookie","${accessToken};${refreshToken}")
+        response.setHeader(HttpHeaders.SET_COOKIE,"${accessToken};${refreshToken}")
         //var list  = kakaoService.getUserInfo(token.accessToken.toString())
         return ResponseEntity.ok().body("토큰 발급 완료")
     }
