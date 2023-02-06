@@ -143,7 +143,7 @@ class PetServiceImpl(
             select.age = jsonObject.getString("age")
             val member: Member? = memberRepo.findByEmail(email)
             if(member != null){
-                select.member = member
+
                 member.list.add(select)
             }
             list.add(select)
