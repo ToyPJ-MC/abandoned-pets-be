@@ -1,6 +1,7 @@
 package Winter.pets.controller
 
 import Winter.pets.domain.jwt.KakaoService
+import Winter.pets.domain.jwt.TokenDTO
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
@@ -20,17 +21,13 @@ class KakaoController(private val kakaoService: KakaoService) {
 
         val token =kakaoService.getToken(code)
         println("$token")
-        var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
-            .maxAge(token.accessExpiresIn.toLong())
-            .sameSite("None")
-            .build()
-        var refreshToken = ResponseCookie.from("refresh_token", token.refreshToken.toString())
-            .maxAge(token.refreshExpiresIn.toLong())
-            .sameSite("None")
-            .build()
-        response.setHeader("Set-Cookie",token.toString())
-        println("$accessToken.toString()")
-        println("$refreshToken.toString()")
+        var tokenDTO =TokenDTO()
+        tokenDTO.accessToken = token.accessToken
+        tokenDTO.accessExpiresIn = token.accessExpiresIn
+        tokenDTO.refreshToken = token.refreshToken
+        tokenDTO.refreshExpiresIn = token.refreshExpiresIn
+        tokenDTO.tokenType = token.tokenType
+        response.setHeader("Set-Cookie",tokenDTO.toString())
         //var list  = kakaoService.getUserInfo(token.accessToken.toString())
         return ResponseEntity.ok().body("토큰 발급 완료")
     }
