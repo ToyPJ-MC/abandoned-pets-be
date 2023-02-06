@@ -2,6 +2,7 @@ package Winter.pets.controller
 
 import Winter.pets.domain.jwt.KakaoService
 import io.swagger.v3.oas.annotations.Operation
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 
 import org.springframework.http.ResponseEntity
@@ -13,12 +14,12 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api")
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
-    @Operation(summary = "카카오 로그인 시 토큰 발급 && 쿠키 저장")
+    @Operation(summary = "AccessToken,RefreshToken 발급하기", description = "로그인 시 발급된 인가코드 입력")
     @GetMapping("/user/login")
-    fun getToken(@RequestParam("code")code :String,response : HttpServletResponse):ResponseEntity<Any>{
+    fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<Any>{
 
         val token =kakaoService.getToken(code)
-        println("$token.")
+        println("$token")
         var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
             .maxAge(token.accessExpiresIn.toLong())
             .sameSite("None")
@@ -27,10 +28,31 @@ class KakaoController(private val kakaoService: KakaoService) {
             .maxAge(token.refreshExpiresIn.toLong())
             .sameSite("None")
             .build()
-        response.setHeader("Set-Cookie",accessToken.value)
+        response.setHeader("Set-Cookie",accessToken.toString())
         response.setHeader("Set-Cookie",refreshToken.toString())
-        var list  = kakaoService.getUserInfo(token.accessToken.toString())
-        return ResponseEntity.ok().body(list)
+        println("$accessToken.toString()")
+        println("$refreshToken.toString()")
+        //var list  = kakaoService.getUserInfo(token.accessToken.toString())
+        return ResponseEntity.ok().body("토큰 발급 완료")
+    }
+    @Operation(summary = "개인정보 불러오기", description = "발급된 accessToken으로 요청")
+    @PostMapping("/user/info")
+    fun postToUserInfo(@RequestParam("access")token:String, request: HttpServletRequest):ResponseEntity<Any>{
+        try{
+           /* val cookie: Array<Cookie> = request.cookies
+            var list=HashMap<String,Any>()
+            for(i in 0 until cookie.size){
+                if(cookie[i].name.equals("Set-Cookie")){
+                    println(cookie[i].name)
+                    list = kakaoService.getUserInfo(cookie[i].value) as HashMap<String, Any>
+                }
+            }*/
+            //var list= kakaoService.getUserInfo(token
+            val list = kakaoService.getUserInfo(token)
+            return ResponseEntity.ok().body(list)
+        }catch (e : RuntimeException){
+            return ResponseEntity.badRequest().body(e.printStackTrace())
+        }
     }
     @Operation(summary = "약관 정보")
     @PostMapping("/user/test")
@@ -39,9 +61,10 @@ class KakaoController(private val kakaoService: KakaoService) {
            val cookies : Array<Cookie> = request.cookies
            var agree:String?=null
            for (i in 0 until cookies.size)
-               if(cookies[i].name.equals("accessToken"))
+               if(cookies[i].name.equals("access_Token"))
                    agree = kakaoService.getAgreementInfo(cookies[i].value)
-           return ResponseEntity.ok().body(agree)
+
+           return ResponseEntity.ok().body("test")
        }catch (e : RuntimeException){
            return ResponseEntity.badRequest().body("잘못된 조회")
        }

@@ -1,6 +1,8 @@
 package Winter.pets.domain.kind
 
 import lombok.Data
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -29,4 +31,7 @@ class AddPets {
     var colorCd:String?=null
     var happenDt:String?=null
     var age:String?=null
+    @CreatedDate
+    @Column(updatable = false)
+    var createAt= LocalDateTime.now()
 }

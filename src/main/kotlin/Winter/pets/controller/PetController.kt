@@ -23,17 +23,17 @@ class PetController(
     @PostMapping("find/abandonded")
     fun findToPet(@RequestParam("start_time")start:String, @RequestParam("end_time")end:String, @RequestParam("kind_code")kindCode:String,
                   @RequestParam("kind")kind:String, @RequestParam("si_code")si:String, @RequestParam("gungu_code")gungu:String, @RequestParam("center")center:String,
-                  @RequestParam("state")state:String, @RequestParam("neuter")neuter:String): ResponseEntity<Any> {
+                  @RequestParam("state")state:String, @RequestParam("neuter")neuter:String,@RequestParam("UserEmail")userEmail:String): ResponseEntity<Any> {
         try{
             var list:List<SelectPets>
             if(kindCode.equals("417000")){
                 var findDog: Dog = dogRepo.findByDogName(kind);
-                list = petService.selectToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter);
+                list = petService.selectToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter,userEmail);
                 return ResponseEntity.ok().body(list);
             }
             else{
                 var findCat: Cat = catRepo.findByCatName(kind);
-                list = petService.selectToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter);
+                list = petService.selectToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter,userEmail);
                 return ResponseEntity.ok().body(list);
             }
         }catch (e:RuntimeException){

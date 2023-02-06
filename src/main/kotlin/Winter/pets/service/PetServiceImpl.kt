@@ -2,6 +2,8 @@ package Winter.pets.service
 
 import Winter.pets.domain.Country.Center
 import Winter.pets.domain.Country.GunGu
+import Winter.pets.domain.jwt.domain.Member
+import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.AddPets
 import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.*
@@ -18,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.text.StringBuilder
@@ -27,7 +30,8 @@ class PetServiceImpl(
     private val petRepo: PetsRepository,
     private val addPetRepo: AddToPetRepository,
     private val gunguRepo: gunguRepository,
-    private val centerRepo: CenterRepository
+    private val centerRepo: CenterRepository,
+    private val memberRepo : MemberRepository
 ) : PetService {
 
     //************************** 유기동물 select 조회 ***************************//
@@ -40,7 +44,8 @@ class PetServiceImpl(
         gungu: String,
         centerCode: String,
         state: String,
-        neuter: String
+        neuter: String,
+        email:String
     ): List<SelectPets> {
         val findGungu: GunGu = gunguRepo.findBySiNameAndGunguName(si, gungu)
         val findCenter: Center = centerRepo.findByCenterNameAndGunguName(centerCode, gungu)
@@ -124,6 +129,7 @@ class PetServiceImpl(
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
 
         var list = ArrayList<SelectPets>()
+
         for (i in 0 until item.length()) {
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i)
@@ -135,9 +141,15 @@ class PetServiceImpl(
             select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
             select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
             select.age = jsonObject.getString("age")
+            val member: Member? = memberRepo.findByEmail(email)
+            if(member != null){
+                select.member = member
+                member.list.add(select)
+            }
             list.add(select)
             petRepo.save(select)
         }
+
         return list
     }
 
@@ -234,14 +246,13 @@ class PetServiceImpl(
     /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")
     override fun deleteToPet() {
-        addPetRepo.deleteAll()
+        val select = addPetRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
+        for(i in 0 until select.size){
+            if(select[i].createAt.isAfter(LocalDateTime.now())){
+                addPetRepo.delete(select[i])
+            }
+        }
     }
-    /************최근 검색 조회 db 매주 월요일 12시 05분 delete 기능****************/
-    @Scheduled(cron="0 05 12 * JAN *") //순서별로 초 분 시 일 월 요일 년(생략가능)
-    override fun deleteToSelectPet() {
-        petRepo.deleteAll()
-    }
-
     override fun allToPet(): String {
         val size = addPetRepo.findAll().size -1
         return size.toString()

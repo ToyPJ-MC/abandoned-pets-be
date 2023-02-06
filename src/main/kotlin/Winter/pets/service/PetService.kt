@@ -7,14 +7,13 @@ import org.springframework.data.domain.Pageable
 interface PetService {
 
     fun selectToPet(Start:String,end:String,kindCode:String,kind:String,
-                  si:String,gungu:String,centerCode:String,state:String,neuter:String): List<SelectPets>
+                  si:String,gungu:String,centerCode:String,state:String,neuter:String,email:String): List<SelectPets>
     fun findToPet(page:Int,size:Int): List<AddPets>
     fun findToMaxPage():String
     fun addToPet():Unit
     fun findToSearchList():List<SelectPets>
 
     fun deleteToPet():Unit
-    fun deleteToSelectPet():Unit
     fun allToPet():String
 
 }

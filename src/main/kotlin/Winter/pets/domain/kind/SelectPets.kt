@@ -1,7 +1,10 @@
 package Winter.pets.domain.kind
 
+import Winter.pets.domain.jwt.domain.Member
 import com.fasterxml.jackson.annotation.JsonFormat
 import lombok.Data
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -33,5 +36,11 @@ class SelectPets {
     var colorCd:String?=null
     var happenDt:String?=null
     var age:String?=null
+    @CreatedDate
+    @Column(updatable = false)
+    var createAt=LocalDateTime.now()
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_email")
+    var member= Member()
 
 }
