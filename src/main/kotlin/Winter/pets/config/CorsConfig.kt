@@ -22,7 +22,7 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://203.241.228.50:18000")
             .allowedOrigins("http://203.241.228.50:55173")
             .exposedHeaders("Set-Cookie")
-            .allowedMethods("GET","POST")
+            .allowedMethods("GET","POST","OPTIONS")
             .maxAge(3000);
     }
     override fun configureAsyncSupport(confiqurer : AsyncSupportConfigurer):Unit {
