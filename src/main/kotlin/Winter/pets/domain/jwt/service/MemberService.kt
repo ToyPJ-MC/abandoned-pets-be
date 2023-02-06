@@ -22,12 +22,15 @@ class MemberService (
             }
         }
     }
+    fun delete() {
+        val select = petRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
+    }
     /*************유저 Email로 최근 검색 조회**************/
     fun findToList(userEmail:String): List<SelectPets> {
        var member = memberRepo.findByEmail(userEmail)
         if (member != null) {
             println("${member.list}")
-            return member.list
+            return member.list.toList()
         }
         return emptyList()
     }

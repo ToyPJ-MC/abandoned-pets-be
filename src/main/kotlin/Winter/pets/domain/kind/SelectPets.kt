@@ -39,8 +39,4 @@ class SelectPets {
     @CreatedDate
     @Column(updatable = false)
     var createAt=LocalDateTime.now()
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_email")
-    var member= Member()
-
 }

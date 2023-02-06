@@ -8,6 +8,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
 import javax.persistence.OneToMany
 
 @Entity
@@ -22,6 +23,7 @@ class Member {
     var gender:String?=null
     @Column(name="member_email")
     var email:String?=null
-    @OneToMany(mappedBy = "member", cascade = arrayOf(CascadeType.ALL))
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
+    @JoinColumn(name="emember_email")
     var list:MutableList<SelectPets> = ArrayList<SelectPets>()
 }

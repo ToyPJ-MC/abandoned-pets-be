@@ -129,7 +129,7 @@ class PetServiceImpl(
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
 
         var list = ArrayList<SelectPets>()
-
+        val member: Member? = memberRepo.findByEmail(email)
         for (i in 0 until item.length()) {
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i)
@@ -141,9 +141,7 @@ class PetServiceImpl(
             select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
             select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
             select.age = jsonObject.getString("age")
-            val member: Member? = memberRepo.findByEmail(email)
-            if(member != null){
-
+            if (member != null) {
                 member.list.add(select)
             }
             list.add(select)
