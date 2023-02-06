@@ -22,6 +22,7 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOrigins("http://203.241.228.50:18000")
             .allowedOrigins("http://203.241.228.50:55173")
             .exposedHeaders("Set-Cookie")
+            .allowedHeaders("Content-Type","Axxess-Control-Allow-Origin","Authorization","x-requested-with","Set-Cookie")
             .allowedMethods("GET","POST","OPTIONS")
             .maxAge(3000);
     }
