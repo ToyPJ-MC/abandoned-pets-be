@@ -45,7 +45,7 @@ class PetServiceImpl(
         centerCode: String,
         state: String,
         neuter: String,
-        email:String
+        memberId:String
     ): List<SelectPets> {
         val findGungu: GunGu = gunguRepo.findBySiNameAndGunguName(si, gungu)
         val findCenter: Center = centerRepo.findByCenterNameAndGunguName(centerCode, gungu)
@@ -129,7 +129,7 @@ class PetServiceImpl(
         val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
 
         var list = ArrayList<SelectPets>()
-        val member: Member? = memberRepo.findByEmail(email)
+        val member: Member? = memberRepo.findById(memberId)
         for (i in 0 until item.length()) {
             var select = SelectPets()
             val jsonObject = item.getJSONObject(i)
@@ -145,7 +145,6 @@ class PetServiceImpl(
                 member.list.add(select)
             }
             list.add(select)
-            petRepo.save(select)
         }
 
         return list

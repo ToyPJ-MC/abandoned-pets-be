@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api")
 class MemberController(private val memberservice:MemberService) {
 
-    @Operation(summary = "유저 email로 최근 검색 조회", description = "유저 email 입력하기")
+    @Operation(summary = "member id 로 최근 검색 조회", description = "유저 id 입력하기")
     @GetMapping("user/select")
-    fun searchToList(@RequestParam("User-Email")userEmail:String):ResponseEntity<Any>{
+    fun searchToList(@RequestParam("member_id")memberId:String):ResponseEntity<Any>{
         try{
-            val list = memberservice.findToList(userEmail)
+            val list = memberservice.findToList(memberId)
             return ResponseEntity.ok().body(list)
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())

@@ -4,30 +4,33 @@ import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.PetsRepository
 import org.springframework.data.domain.Sort
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
-@Service
+@Service @EnableScheduling
 class MemberService (
     private val memberRepo:MemberRepository,
     private val petRepo:PetsRepository){
     /************최근 검색 조회 db 매주 월요일 12시 05분 delete 기능****************/
-    @Scheduled(cron="0 05 12 * JAN *") //순서별로 초 분 시 일 월 요일 년(생략가능)
-   fun deleteToSelectPet() {
-        val select = petRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
-        for(i in 0 until select.size){
-            if(select[i].createAt.isAfter(LocalDateTime.now())){
-                petRepo.delete(select[i])
+   /* @Scheduled(cron="0 05 12 * * *") //순서별로 초 분 시 일 월 요일 년(생략가능)
+   fun deleteToSelectPet(memberId:String) {
+        var member = memberRepo.findById(memberId)
+        var list:List<SelectPets>;
+        if (member != null) {
+            for(i in 0 until member.list.size){
+                if(member.list.get(i).createAt.isAfter(LocalDateTime.now()))
+                    member.list.removeAt(i)
             }
         }
-    }
+    }*/
     fun delete() {
         val select = petRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
     }
-    /*************유저 Email로 최근 검색 조회**************/
-    fun findToList(userEmail:String): List<SelectPets> {
-       var member = memberRepo.findByEmail(userEmail)
+    /*************유저 ID로 최근 검색 조회**************/
+    fun findToList(memberId:String): List<SelectPets> {
+       var member = memberRepo.findById(memberId)
         if (member != null) {
             println("${member.list}")
             return member.list.toList()

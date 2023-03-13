@@ -74,7 +74,6 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
     fun getUserInfo(access_token : String):Map<String,Any> {
         val host = "https://kapi.kakao.com/v2/user/me"
         var result = HashMap<String, Any>()
-        var member = Member()
         try {
             val url = URL(host)
             val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
@@ -94,28 +93,32 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
             val root = JSONObject(buf.toString())
             val kakaoAcount = root.getJSONObject("kakao_account")
             val nickname = kakaoAcount.getJSONObject("profile").get("nickname").toString()
-            val email = kakaoAcount.get("email")
-            val gender = kakaoAcount.get("gender")
-            val picture = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url").toString()
-            val id = root.get("id")
-            result.put("id",id)
+            val setemail = kakaoAcount.get("email")
+            val setgender = kakaoAcount.get("gender")
+            val setpicture = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url")
+            val setid = root.get("id")
+            result.put("id",setid)
             result.put("nickname", nickname)
-            result.put("gender", gender)
-            result.put("age_range", email)
-            result.put("picture", picture)
+            result.put("gender", setgender)
+            result.put("email", setemail)
+            result.put("picture", setpicture)
+            println("$setpicture")
+            println(result.get("picture").toString())
+            var member:Member? = memberRepo.findById(setid.toString())
+            if(member?.id == null){
+                member?.id = setid.toString()
+                member?.profile = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url").toString()
+                member?.name = nickname
+                member?.gender = setgender.toString()
+                member?.email = setemail.toString()
+
+
+            }
             br.close()
         } catch (e: IOException){
             e.printStackTrace()
         }catch (e : ParseException){
             e.printStackTrace()
-        }
-        if(memberRepo.findByEmail(result.get("email").toString())==null){
-            val member= Member()
-            member.email=result.get("age_range").toString()
-            member.gender=result.get("gender").toString()
-            member.name = result.get("nickname").toString()
-            member.id = result.get("id") as Long?
-            memberRepo.save(member)
         }
         return result
     }
@@ -149,19 +152,8 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
         }
         return result
     }
-    /********* 로그 아웃 시 ************/
-    fun userLogOut(access_token: String):Unit{
-        val host = "https://kapi.kakao.com/v1/user/logout"
-        try {
-            val url = URL(host)
-            val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            urlConnection.setRequestProperty("Authorization", "Bearer " + access_token)
-            urlConnection.requestMethod = "POST"
-        }catch (e : IOException){
-            e.printStackTrace()
-        }
-    }
-    fun requestToToken():String{
-        return "http://localhost:5173/login"
+
+    fun memberInfo(memberId : String): Member? {
+        return memberRepo.findById(memberId);
     }
 }

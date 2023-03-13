@@ -20,72 +20,18 @@ class KakaoController(private val kakaoService: KakaoService) {
     fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<String>{
 
         val token =kakaoService.getToken(code)
-        println("$token")
-        var accessToken = ResponseCookie.from("access_token", token.accessToken.toString())
-            .maxAge(token.accessExpiresIn.toLong())
-            .sameSite("None")
-            .path("/")
-            .domain("localhost")
-            .build()
-        var refreshToken = ResponseCookie.from("refresh_token", token.refreshToken.toString())
-            .maxAge(token.refreshExpiresIn.toLong())
-            .sameSite("None")
-            .path("/")
-            .domain("localhost")
-            .build()
-        var headers = HttpHeaders()
-        headers.add(SET_COOKIE,"$accessToken")
-        headers.add(SET_COOKIE,"$refreshToken")
-        return ResponseEntity.ok().headers(headers).body("저장")
+        val list = kakaoService.getUserInfo(token.accessToken.toString())
+
+        return ResponseEntity.ok().body(list.get("id").toString())
     }
-    @Operation(summary = "개인정보 불러오기", description = "발급된 accessToken으로 요청")
-    @PostMapping("/user/info")
-    fun postToUserInfo(@RequestParam("access")token:String, request: HttpServletRequest):ResponseEntity<Any>{
+    @Operation(summary = "개인정보 불러오기", description = "개인 고유 Id로 정보 요청")
+    @GetMapping("/user/info")
+    fun postToUserInfo(@RequestParam("member_id")memberId : String):ResponseEntity<Any>{
         try{
-           /* val cookie: Array<Cookie> = request.cookies
-            var list=HashMap<String,Any>()
-            for(i in 0 until cookie.size){
-                if(cookie[i].name.equals("Set-Cookie")){
-                    println(cookie[i].name)
-                    list = kakaoService.getUserInfo(cookie[i].value) as HashMap<String, Any>
-                }
-            }*/
-            //var list= kakaoService.getUserInfo(token
-            val list = kakaoService.getUserInfo(token)
-            return ResponseEntity.ok().body(list)
+            val member =kakaoService.memberInfo(memberId);
+            return ResponseEntity.ok().body(member)
         }catch (e : RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())
-        }
-    }
-    @Operation(summary = "약관 정보")
-    @PostMapping("/user/test")
-    fun getUserAgree(request: HttpServletRequest):ResponseEntity<Any>{
-       try{
-           val cookies : Array<Cookie> = request.cookies
-           var agree:String?=null
-           for (i in 0 until cookies.size)
-               if(cookies[i].name.equals("access_Token"))
-                   agree = kakaoService.getAgreementInfo(cookies[i].value)
-
-           return ResponseEntity.ok().body("test")
-       }catch (e : RuntimeException){
-           return ResponseEntity.badRequest().body("잘못된 조회")
-       }
-    }
-    @Operation(summary = "로그 아웃")
-    @PostMapping("/user/logout")
-    fun getUserLogOut(request: HttpServletRequest):ResponseEntity<Any>{
-        try{
-            val cookie = request.cookies
-            var token:String?=null
-            for(i in 0 until cookie.size){
-                if(cookie.get(i).name.equals("access_token"))token=cookie.get(i).value
-            }
-            kakaoService.userLogOut(token.toString())
-
-            return ResponseEntity.ok().body("http://localhost:5173")
-        }catch (e: RuntimeException){
-            return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
 }
