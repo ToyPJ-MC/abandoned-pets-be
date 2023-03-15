@@ -19,7 +19,6 @@ import java.net.ProtocolException
 import java.net.URL
 import javax.imageio.IIOException
 
-
 @Service
 class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberRepository)
 {
@@ -45,8 +44,6 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
             bw.flush()
 
             val responseCode:Int = urlConnection.responseCode
-            println("$responseCode")
-
             val br= BufferedReader(InputStreamReader(urlConnection.inputStream))
             var line:String?=null
             var buf = StringBuffer()
@@ -55,7 +52,7 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
                 if(line != null) buf.append(line)
             }while (line != null)
             val root = JSONObject(buf.toString())
-            println("$root")
+
             token.accessToken = root.get("access_token").toString()
             token.accessExpiresIn = root.get("expires_in") as Int
             token.refreshToken = root.get("refresh_token").toString()
@@ -72,55 +69,60 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
     }
     /************ accessToken으로 userinfo 요청 ***************/
     fun getUserInfo(access_token : String):Map<String,Any> {
-        val host = "https://kapi.kakao.com/v2/user/me"
         var result = HashMap<String, Any>()
-        try {
-            val url = URL(host)
-            val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            urlConnection.setRequestProperty("Authorization", "Bearer " + access_token)
-            urlConnection.requestMethod = "GET"
+        if(memberRepo.findByAccessToken(access_token)==null){
+            val host = "https://kapi.kakao.com/v2/user/me"
+            try {
+                val url = URL(host)
+                val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                urlConnection.setRequestProperty("Authorization", "Bearer " + access_token)
+                urlConnection.requestMethod = "GET"
 
-            val responseCode = urlConnection.responseCode
-            println("responseCode = $responseCode")
+                val responseCode = urlConnection.responseCode
 
-            val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
-            var line: String?=null
-            var buf = StringBuffer()
-            do {
-                line = br.readLine()
-                if (line != null) buf.append(line)
-            } while (line != null)
-            val root = JSONObject(buf.toString())
-            val kakaoAcount = root.getJSONObject("kakao_account")
-            val nickname = kakaoAcount.getJSONObject("profile").get("nickname").toString()
-            val setemail = kakaoAcount.get("email")
-            val setgender = kakaoAcount.get("gender")
-            val setpicture = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url")
-            val setid = root.get("id")
-            result.put("id",setid)
-            result.put("nickname", nickname)
-            result.put("gender", setgender)
-            result.put("email", setemail)
-            result.put("picture", setpicture)
-            println("$setpicture")
-            println(result.get("picture").toString())
-            var member:Member? = memberRepo.findById(setid.toString())
-            if(member?.id == null){
-                member?.id = setid.toString()
-                member?.profile = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url").toString()
-                member?.name = nickname
-                member?.gender = setgender.toString()
-                member?.email = setemail.toString()
+                val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                var line: String?=null
+                var buf = StringBuffer()
+                do {
+                    line = br.readLine()
+                    if (line != null) buf.append(line)
+                } while (line != null)
+                val root = JSONObject(buf.toString())
+                val kakaoAcount = root.getJSONObject("kakao_account")
+                val nickname = kakaoAcount.getJSONObject("profile").get("nickname").toString()
+                val setemail = kakaoAcount.get("email")
+                val setpicture = kakaoAcount.getJSONObject("profile").get("thumbnail_image_url")
+                val setid = root.get("id")
+                result.put("id",setid)
+                result.put("nickname", nickname)
+                result.put("email", setemail)
+                result.put("picture", setpicture)
+                var member= Member()
+                member.profile = setpicture.toString()
+                member.name = nickname
+                member.email =setemail.toString()
+                member.id = setid.toString()
 
-
+                var find = memberRepo.findById(member.id!!)
+                if(!find.accessToken.equals(access_token)) member.accessToken = access_token
+                memberRepo.save(member)
+                br.close()
+            } catch (e: IOException){
+                e.printStackTrace()
+            }catch (e : ParseException){
+                e.printStackTrace()
             }
-            br.close()
-        } catch (e: IOException){
-            e.printStackTrace()
-        }catch (e : ParseException){
-            e.printStackTrace()
+            return result
         }
-        return result
+        else{ //엑세스토큰이 유요한 경우
+            var member = memberRepo.findByAccessToken(access_token);
+            result.put("id", member?.id!!.toLong())
+            result.put("nickname",member.name.toString())
+            result.put("email",member.email.toString())
+            result.put("picture",member.profile.toString())
+            return result
+        }
+
     }
     /******** 약관 정보 ************/
     fun getAgreementInfo(access_token : String):String{

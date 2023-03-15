@@ -1,5 +1,4 @@
-import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 
 plugins {
 	id("org.springframework.boot") version "2.7.6"
@@ -38,18 +37,10 @@ dependencies {
 	implementation("org.keycloak:keycloak-spring-security-adapter:19.0.3")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
 	implementation("org.thymeleaf:thymeleaf:3.0.15.RELEASE")
-	//implementation("org.keycloak:keycloak-admin-client:19.0.3") //키클락
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "11"
-	}
 }
 
 tasks.withType<Test> {

@@ -15,7 +15,7 @@ class SwaggerConfig {
 
     @Bean
     fun api(): Docket {
-        return Docket(DocumentationType.SWAGGER_2)
+        return Docket(DocumentationType.OAS_30)
             .useDefaultResponseMessages(false)
             .select()
             .apis(RequestHandlerSelectors.basePackage("Winter.pets.controller"))

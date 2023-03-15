@@ -19,11 +19,11 @@ class Member {
     var id:String?=null
     @Column(name="memeber_name")
     var name:String?=null
-    @Column(name="member_gender")
-    var gender:String?=null
     @Column(name="member_email")
     var email:String?=null
+    @Column(name="member_profile")
     var profile:String?=null
+    var accessToken:String?=null
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
     @JoinColumn(name="emember_id")
     var list:MutableList<SelectPets> = ArrayList<SelectPets>()

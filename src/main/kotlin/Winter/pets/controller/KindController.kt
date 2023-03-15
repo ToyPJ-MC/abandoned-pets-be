@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@CrossOrigin("http://192.168.0.16:8080")
 @RequestMapping("api")
 @RestController
 class KindController(private val kindService: KindService) {

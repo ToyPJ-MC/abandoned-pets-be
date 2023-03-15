@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@CrossOrigin("http://192.168.0.16:8080")
 @RestController
 @RequestMapping("/api")
 class SiController(private val siService: SiService) {

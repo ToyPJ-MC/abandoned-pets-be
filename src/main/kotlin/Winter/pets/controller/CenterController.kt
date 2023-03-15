@@ -14,7 +14,7 @@ class CenterController(private val centerService: CenterService) {
     fun AddToCenter(siName:String, gunguName: String):ResponseEntity<String>{
         try{
             centerService.addToCenter(siName,gunguName)
-            return ResponseEntity.ok().body("센터가 추가되었습니다.")
+            return ResponseEntity.ok().body(siName+" " + gunguName+" 추가되었습니다.")
         }catch (e: RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }

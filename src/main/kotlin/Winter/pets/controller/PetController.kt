@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@CrossOrigin("http://192.168.0.16:8080")
 @RestController
 @RequestMapping("/api")
 class PetController(
@@ -31,7 +30,7 @@ class PetController(
                 list = petService.selectToPet(start,end,kindCode,findDog.kindCode.toString(),si,gungu,center,state,neuter,memberId);
                 return ResponseEntity.ok().body(list);
             }
-            else{
+            else{ //422400 고양이
                 var findCat: Cat = catRepo.findByCatName(kind);
                 list = petService.selectToPet(start,end,kindCode,findCat.kindCode.toString(),si,gungu,center,state,neuter,memberId);
                 return ResponseEntity.ok().body(list);

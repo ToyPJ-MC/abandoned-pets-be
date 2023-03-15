@@ -18,16 +18,11 @@ class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("http://localhost:5173")
-            .allowedOrigins("http://localhost:8080")
-            .allowedOrigins("http://localhost:5173")
-            .allowedOrigins("http://203.241.228.50:18000")
-            .allowedOrigins("http://203.241.228.50:55173")
-            .allowedHeaders("X-Requested-With","X-HTTP-Method-Override","Content-Type","Accept")
+            .allowedOriginPatterns("http://localhost:5432")
+            .allowedOrigins("http://localhost:5432")
             .allowCredentials(true)
-            .exposedHeaders(SET_COOKIE)
-            .allowedMethods("GET","POST","OPTIONS")
-            .maxAge(3000);
+            .allowedMethods("GET","POST")
+            .maxAge(3600);
     }
     override fun configureAsyncSupport(confiqurer : AsyncSupportConfigurer):Unit {
         confiqurer.setDefaultTimeout(100000)
