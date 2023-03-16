@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MemberRepository : JpaRepository<Member,Long> {
 
-    fun findById (id:String):Member
+    fun findById (id:String):Member?{
+        return null
+    }
     fun findByAccessToken (token: String):Member?{
         return null
     }

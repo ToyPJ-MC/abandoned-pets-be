@@ -17,6 +17,7 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.ProtocolException
 import java.net.URL
+import java.nio.charset.StandardCharsets
 import javax.imageio.IIOException
 
 @Service
@@ -30,37 +31,24 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
         val urlConnection : HttpURLConnection = url.openConnection() as HttpURLConnection
         val token= TokenDTO()
         try{
-            urlConnection.requestMethod ="POST"
-            urlConnection.doOutput = true
-            val bw = BufferedWriter(OutputStreamWriter(urlConnection.outputStream))
-            val sb:StringBuilder = StringBuilder()
-            sb.append("grant_type=authorization_code")
-            sb.append("&client_id=",kakaoProperties.client_id)
-            sb.append("&redirect_uri=http://localhost:5173/oauth/kakao/callback")
-            //sb.append("&redirect_uri=","http://localhost:8080")
-            sb.append("&code=" + code)
-            sb.append("&client_secret=",kakaoProperties.client_secret)
-            bw.write(sb.toString())
-            bw.flush()
 
-            val responseCode:Int = urlConnection.responseCode
-            val br= BufferedReader(InputStreamReader(urlConnection.inputStream))
-            var line:String?=null
-            var buf = StringBuffer()
-            do{
-                line = br.readLine()
-                if(line != null) buf.append(line)
-            }while (line != null)
-            val root = JSONObject(buf.toString())
+            val postData = "grant_type=authorization_code&client_id=${kakaoProperties.client_id}&redirect_uri=${kakaoProperties.redirect_uri}&code=${code}"
+            val postDataBytes = postData.toByteArray(StandardCharsets.UTF_8)
+            val conn = URL(host).openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
+            conn.setRequestProperty("Content-Length", postDataBytes.size.toString())
+            conn.outputStream.write(postDataBytes)
+
+            val response = conn.inputStream.bufferedReader().use { it.readText() }
+            val root = JSONObject(response)
 
             token.accessToken = root.get("access_token").toString()
             token.accessExpiresIn = root.get("expires_in") as Int
             token.refreshToken = root.get("refresh_token").toString()
             token.refreshExpiresIn = root.get("refresh_token_expires_in") as Int
             token.tokenType = root.get("token_type").toString()
-
-            br.close()
-            bw.close()
 
         }catch (e:IIOException){
             e.printStackTrace()
@@ -97,15 +85,18 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
                 result.put("nickname", nickname)
                 result.put("email", setemail)
                 result.put("picture", setpicture)
-                var member= Member()
-                member.profile = setpicture.toString()
-                member.name = nickname
-                member.email =setemail.toString()
-                member.id = setid.toString()
 
-                var find = memberRepo.findById(member.id!!)
-                if(!find.accessToken.equals(access_token)) member.accessToken = access_token
-                memberRepo.save(member)
+
+                var find = memberRepo.findById(setid.toString())
+                if(!find?.accessToken.equals(access_token)){
+                    var member= Member()
+                    member.profile = setpicture.toString()
+                    member.name = nickname
+                    member.email =setemail.toString()
+                    member.id = setid.toString()
+                    member.accessToken = access_token
+                    memberRepo.save(member)
+                }
                 br.close()
             } catch (e: IOException){
                 e.printStackTrace()

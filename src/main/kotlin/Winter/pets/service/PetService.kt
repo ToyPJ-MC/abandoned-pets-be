@@ -11,7 +11,7 @@ interface PetService {
     fun findToPet(page:Int,size:Int): List<AddPets>
     fun findToMaxPage():String
     fun addToPet():Unit
-    fun findToSearchList():List<SelectPets>
+    fun findToSearchList(memberid: String):List<SelectPets>
 
     fun deleteToPet():Unit
     fun allToPet():String

@@ -1,4 +1,4 @@
 kakao:
   client_id: f572e34312b48d6cebb3d5ce372cf2a7
-  redirect_uri: http://203.241.228.50:55173/oauth/kakao/callback
+  redirect_uri: http://localhost:5173
   client_secret: snwqolbE6Z5ypThJ3eNf1t33c8ymMvhq

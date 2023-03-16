@@ -140,7 +140,7 @@ class PetServiceImpl(
             select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
             select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
             select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
-            select.age = jsonObject.getString("age")
+            select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
             if (member != null) {
                 member.list.add(select)
             }
@@ -236,9 +236,12 @@ class PetServiceImpl(
         }
     }
     /*********************** 최근 검색 조회 ***********************/
-    override fun findToSearchList(): List<SelectPets> {
-        var list:List<SelectPets> = petRepo.findAll()
-        return list
+    override fun findToSearchList(memberid: String): List<SelectPets> {
+        var member = memberRepo.findById(memberid);
+        for(i in 0 until member?.list!!.size){
+            println(member.list.get(i).kindCd)
+        }
+        return member!!.list
     }
     /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")

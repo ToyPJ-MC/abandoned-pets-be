@@ -21,24 +21,26 @@ import javax.servlet.http.HttpServletResponse
 class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "인가코드로 토큰발급", description = "access,refresh 토큰 발급")
     @GetMapping("/user/login")
-    fun getToken(@RequestParam("code")code :String):ResponseEntity<String>{
+    fun getToken(@RequestParam("code")code :String, response: HttpServletResponse):ResponseEntity<String>{
         println("$code")
         val token =kakaoService.getToken(code)
         val access_token = ResponseCookie.from("aceess_token",token.accessToken)
+            .path("/")
             .maxAge(token.accessExpiresIn.toLong())
-            .httpOnly(true)
             .sameSite("NONE")
             .build()
         val refresh_token = ResponseCookie.from("refresh_token",token.refreshToken)
+            .path("/")
             .maxAge(token.refreshExpiresIn.toLong())
-            .httpOnly(true)
             .sameSite("NONE")
             .build()
         val header = HttpHeaders()
         header.add(SET_COOKIE,access_token.toString())
         header.add(SET_COOKIE,refresh_token.toString())
-        println("${refresh_token} ${access_token}")
-        return ResponseEntity.ok().header(header.toString()).body("헤더에 저장완료")
+        println("${header.get(SET_COOKIE)}")
+        response.setHeader(SET_COOKIE,access_token.toString())
+        response.addHeader(SET_COOKIE,refresh_token.toString())
+        return ResponseEntity.ok().body("헤더에 저장완료")
 
     }
     @Operation(summary = "개인정보 불러오기", description = "카카오에서 발급한 access_token으로 개인정보 조회")

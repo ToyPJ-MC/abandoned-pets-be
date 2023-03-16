@@ -18,9 +18,11 @@ class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("http://localhost:5432")
-            .allowedOrigins("http://localhost:5432")
+            .allowedOriginPatterns("http://localhost:5173")
+            .allowedOrigins("http://localhost:5173")
             .allowCredentials(true)
+            .allowedHeaders("*")
+            .exposedHeaders("Set-Cookie")
             .allowedMethods("GET","POST")
             .maxAge(3600);
     }

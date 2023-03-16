@@ -18,7 +18,7 @@ class PetController(
     private val dogRepo: DogRepository,
     private val catRepo: CatRepository
 ) {
-    @Operation(summary = "유기동물 조회 기능")
+    @Operation(summary = "유기동물 select 조회 기능")
     @PostMapping("find/abandonded")
     fun findToPet(@RequestParam("start_time")start:String, @RequestParam("end_time")end:String, @RequestParam("kind_code")kindCode:String,
                   @RequestParam("kind")kind:String, @RequestParam("si_code")si:String, @RequestParam("gungu_code")gungu:String, @RequestParam("center")center:String,
@@ -68,9 +68,9 @@ class PetController(
     }
     @Operation(summary="최근 검색 기록")
     @PostMapping("/find/search")
-    fun findToSearchList(): ResponseEntity<Any> {
+    fun findToSearchList(@RequestParam("member_id")memberId :String): ResponseEntity<Any> {
         try{
-            var list = petService.findToSearchList()
+            var list = petService.findToSearchList(memberId)
             return ResponseEntity.ok().body(list)
         }catch (e : RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
