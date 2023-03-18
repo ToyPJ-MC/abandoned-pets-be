@@ -130,7 +130,7 @@ class PetServiceImpl(
 
         var list = ArrayList<SelectPets>()
         val member: Member? = memberRepo.findById(memberId)
-        if (member ==null){
+        if (member ==null){ //해당 멤버가 없는 경우
             for (i in 0 until item.length()) {
                 var select = SelectPets()
                 val jsonObject = item.getJSONObject(i)
@@ -143,9 +143,10 @@ class PetServiceImpl(
                 select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
                 select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
                 list.add(select)
+                petRepo.save(select)
             }
         }
-        else{
+        else{ //멤버 조회 success
             for (i in 0 until item.length()) {
                 var select = SelectPets()
                 val jsonObject = item.getJSONObject(i)
@@ -161,6 +162,7 @@ class PetServiceImpl(
                     member.list.add(select)
                 }
                 list.add(select)
+                petRepo.save(select)
             }
         }
         return list
@@ -255,9 +257,9 @@ class PetServiceImpl(
     override fun findToSearchList(memberid: String): List<SelectPets> {
         var member = memberRepo.findById(memberid);
         for(i in 0 until member?.list!!.size){
-            println(member.list.get(i).kindCd)
+            println("${member.list.get(i)}")
         }
-        return member!!.list
+        return member?.list!!
     }
     /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")
@@ -269,6 +271,7 @@ class PetServiceImpl(
             }
         }
     }
+    //전체 페이지 조회
     override fun allToPet(): String {
         val size = addPetRepo.findAll().size -1
         return size.toString()
