@@ -66,22 +66,24 @@ class PetController(
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-    @Operation(summary="최근 검색 기록")
-    @PostMapping("/find/search")
-    fun findToSearchList(@RequestParam("member_id")memberId :String): ResponseEntity<Any> {
-        try{
-            var list = petService.findToSearchList(memberId)
-            return ResponseEntity.ok().body(list)
-        }catch (e : RuntimeException){
-            return ResponseEntity.badRequest().body("잘못된 조회")
-        }
-    }
+
     @Operation(summary = "총 유기동물 수 조회")
     @GetMapping("/find/size")
     fun findToAllSize():ResponseEntity<String>{
         try{
             var find = petService.allToPet()
             return ResponseEntity.ok().body(find)
+        }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body("잘못된 조회")
+        }
+    }
+
+    @Operation(summary = "수동 delete")
+    @GetMapping("/find/delete/all")
+    fun deletePet():ResponseEntity<String>{
+        try{
+            petService.deleteAuto()
+            return ResponseEntity.ok().body("삭제완료")
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }

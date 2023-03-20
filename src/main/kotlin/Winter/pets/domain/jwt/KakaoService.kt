@@ -88,14 +88,18 @@ class KakaoService(val kakaoProperties: KakaoProperties,val memberRepo : MemberR
 
 
                 var find = memberRepo.findById(setid.toString())
-                if(!find?.accessToken.equals(access_token)){
-                    var member= Member()
-                    member.profile = setpicture.toString()
-                    member.name = nickname
-                    member.email =setemail.toString()
+                if(find ==null){ //멤버를 새로 생성해야 할 떄
+                    var member = Member()
                     member.id = setid.toString()
+                    member.name = nickname
+                    member.email = setemail.toString()
+                    member.profile = setpicture.toString()
                     member.accessToken = access_token
                     memberRepo.save(member)
+                }
+                else{ //엑세스토큰이 만료되고 새로 받은 경우
+                    find.accessToken = access_token
+                    memberRepo.save(find)
                 }
                 br.close()
             } catch (e: IOException){

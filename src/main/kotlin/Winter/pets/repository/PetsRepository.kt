@@ -8,4 +8,8 @@ import java.lang.reflect.Member
 @Repository
 interface PetsRepository : JpaRepository<SelectPets,Long> {
 
+    fun findByNoticeNo (noticeNo:String):SelectPets?{
+        return null
+    }
+
 }

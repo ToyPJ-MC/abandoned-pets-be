@@ -7,34 +7,32 @@ import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 
 @Service @EnableScheduling
 class MemberService (
-    private val memberRepo:MemberRepository,
-    private val petRepo:PetsRepository){
-    /************최근 검색 조회 db 매주 월요일 12시 05분 delete 기능****************/
-   /* @Scheduled(cron="0 05 12 * * *") //순서별로 초 분 시 일 월 요일 년(생략가능)
+    private val memberRepo:MemberRepository){
+    //고안 중
    fun deleteToSelectPet(memberId:String) {
         var member = memberRepo.findById(memberId)
-        var list:List<SelectPets>;
-        if (member != null) {
-            for(i in 0 until member.list.size){
-                if(member.list.get(i).createAt.isAfter(LocalDateTime.now()))
-                    member.list.removeAt(i)
+        var sdf = SimpleDateFormat("yyyy-MM-dd")
+        var now = sdf.parse(sdf.format(LocalDateTime.now()))
+            for(i in 0 until member?.list!!.size){
+                if(member.list.get(i).noticeEdt.after(now)){
+                    member.list.remove(member.list.get(i))
+                }
             }
         }
-    }*/
-    fun delete() {
-        val select = petRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
-    }
-    /*************유저 ID로 최근 검색 조회**************/
+
+    /*************유저 ID로 최근 검색 조회**************/ //complete
     fun findToList(memberId:String): List<SelectPets> {
-       var member = memberRepo.findById(memberId)
-        if (member != null) {
-            println("${member.list}")
-            return member.list.toList()
+        var member = memberRepo.findById(memberId);
+        var list :ArrayList<SelectPets> = ArrayList()
+        for(i in 0 until member?.list!!.size){
+            list.add(member.list.get(i))
         }
-        return emptyList()
+        var without = list.distinctBy { it.noticeNo }
+        return without
     }
 }

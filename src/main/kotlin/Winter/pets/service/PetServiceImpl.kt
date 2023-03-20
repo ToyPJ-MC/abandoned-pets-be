@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.text.StringBuilder
@@ -134,35 +135,44 @@ class PetServiceImpl(
             for (i in 0 until item.length()) {
                 var select = SelectPets()
                 val jsonObject = item.getJSONObject(i)
+                var dtformat = SimpleDateFormat("yyyyMMdd")
+                var format = SimpleDateFormat("yyyy-MM-dd")
+                var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
+                var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
+                var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
+
                 select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");select.noticeNo = jsonObject.getString("noticeNo")
-                select.processState = jsonObject.getString("processState");select.noticeSdt = jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+                select.processState = jsonObject.getString("processState");select.noticeSdt = formatNotice;select.careAddr = jsonObject.getString("careAddr")
                 select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
                 select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
                 select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
-                select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
-                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+                select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
+                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
                 select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
                 list.add(select)
-                petRepo.save(select)
             }
         }
         else{ //멤버 조회 success
             for (i in 0 until item.length()) {
                 var select = SelectPets()
                 val jsonObject = item.getJSONObject(i)
+                var dtformat = SimpleDateFormat("yyyyMMdd")
+                var format = SimpleDateFormat("yyyy-MM-dd")
+                var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
+                var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
+                var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
+
                 select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");select.noticeNo = jsonObject.getString("noticeNo")
-                select.processState = jsonObject.getString("processState");select.noticeSdt = jsonObject.getString("noticeSdt");select.careAddr = jsonObject.getString("careAddr")
+                select.processState = jsonObject.getString("processState");select.noticeSdt = formatNotice;select.careAddr = jsonObject.getString("careAddr")
                 select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
                 select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
                 select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
-                select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
-                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = jsonObject.getString("happenDt")
+                select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
+                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
                 select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
-                if (member != null) {
-                    member.list.add(select)
-                }
-                list.add(select)
+                member.list.add(select)
                 petRepo.save(select)
+                list.add(select)
             }
         }
         return list
@@ -238,33 +248,36 @@ class PetServiceImpl(
                     var dtformat = SimpleDateFormat("yyyyMMdd")
                     var format = SimpleDateFormat("yyyy-MM-dd")
                     var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
-                    var date: String = format.format(formatDate)
                     var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
-                    var dates: String = format.format(formatNotice)
+                    var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
+
                     select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");
-                    select.processState = jsonObject.getString("processState");select.noticeSdt = dates;select.careAddr = jsonObject.getString("careAddr")
+                    select.processState = jsonObject.getString("processState");select.noticeSdt =formatNotice;select.careAddr = jsonObject.getString("careAddr")
                     select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");
                     select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
-                    select.officetel = jsonObject.getString("officetel");select.popfile = jsonObject.getString("popfile");select.noticeEdt = jsonObject.getString("noticeEdt");select.neuterYn = jsonObject.getString("neuterYn")
-                    select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = date
+                    select.officetel = jsonObject.getString("officetel");select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
+                    select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
                     select.age = jsonObject.getString("age")
                     addPetRepo.save(select)
                 }
             }
         }
     }
-    /*********************** 최근 검색 조회 ***********************/
-    override fun findToSearchList(memberid: String): List<SelectPets> {
-        var member = memberRepo.findById(memberid);
-        for(i in 0 until member?.list!!.size){
-            println("${member.list.get(i)}")
+    override fun deleteToSearchList(memberid: String) {
+        val select  =  petRepo.findAll(Sort.by(Sort.Direction.DESC,"noticeEdt"))
+        var sdf = SimpleDateFormat("yyyy-MM-dd")
+        var now = sdf.parse(sdf.format(LocalDateTime.now()))
+        for(i in 0 until select.size){
+            if(select.get(i).noticeEdt.after(now)){
+                petRepo.delete(select.get(i))
+            }
         }
-        return member?.list!!
     }
+
     /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")
     override fun deleteToPet() {
-        val select = addPetRepo.findAll(Sort.by(Sort.Direction.DESC,"createAt"))
+        val select = addPetRepo.findAll(Sort.by(Sort.Direction.DESC,"noticeEdt"))
         for(i in 0 until select.size){
             if(select[i].createAt.isAfter(LocalDateTime.now())){
                 addPetRepo.delete(select[i])
@@ -275,5 +288,9 @@ class PetServiceImpl(
     override fun allToPet(): String {
         val size = addPetRepo.findAll().size -1
         return size.toString()
+    }
+
+    override fun deleteAuto() {
+        petRepo.deleteAll()
     }
 }
