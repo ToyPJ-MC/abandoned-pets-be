@@ -28,7 +28,7 @@ class SwaggerConfig {
         return ApiInfoBuilder()
             .title("Abandonded Pets Find API")
             .description("Choi && Moon Project")
-            .version("1.0")
+            .version("3.0")
             .contact(
                 Contact(
                     "Good",

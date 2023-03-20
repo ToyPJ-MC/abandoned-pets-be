@@ -2,6 +2,7 @@ package Winter.pets.domain.kind
 
 import Winter.pets.domain.jwt.domain.Member
 import com.fasterxml.jackson.annotation.JsonFormat
+import io.swagger.annotations.ApiModelProperty
 import lombok.Data
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime

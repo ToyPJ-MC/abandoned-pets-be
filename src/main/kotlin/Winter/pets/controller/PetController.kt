@@ -7,10 +7,11 @@ import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.CatRepository
 import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
+import io.swagger.annotations.Api
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+@Api(tags = ["Pet"], description = "펫 API")
 @RestController
 @RequestMapping("/api")
 class PetController(
@@ -18,11 +19,11 @@ class PetController(
     private val dogRepo: DogRepository,
     private val catRepo: CatRepository
 ) {
-    @Operation(summary = "유기동물 select 조회 기능")
-    @PostMapping("find/abandonded")
+    @Operation(summary = "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
+    @PostMapping("select/memberid={member_id}/kind={kind}")
     fun findToPet(@RequestParam("start_time")start:String, @RequestParam("end_time")end:String, @RequestParam("kind_code")kindCode:String,
-                  @RequestParam("kind")kind:String, @RequestParam("si_code")si:String, @RequestParam("gungu_code")gungu:String, @RequestParam("center")center:String,
-                  @RequestParam("state")state:String, @RequestParam("neuter")neuter:String,@RequestParam("member_id")memberId:String): ResponseEntity<Any> {
+                  @PathVariable("kind")kind:String, @RequestParam("si_code")si:String, @RequestParam("gungu_code")gungu:String, @RequestParam("center")center:String,
+                  @RequestParam("state")state:String, @RequestParam("neuter")neuter:String,@PathVariable("member_id")memberId:String): ResponseEntity<Any> {
         try{
             var list:List<SelectPets>
             if(kindCode.equals("417000")){
@@ -39,9 +40,9 @@ class PetController(
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-    @Operation(summary = "유기동물 전체 조회 // DB 저장 되어있는 것만")
-    @GetMapping("find/all")
-    fun findAll(@RequestParam("page")page:Int, @RequestParam("size")size:Int): ResponseEntity<Any> {
+    @Operation(summary = "유기동물 페이징 조회 기능", description = "page = 페이지, size = 한 페이지에 보여줄 데이터 수")
+    @GetMapping("pets/page={page}/size={size}")
+    fun findAll(@PathVariable("page")page:Int, @PathVariable("size")size:Int): ResponseEntity<Any> {
         try{
             var list: List<AddPets> = petService.findToPet(page,size)
             return ResponseEntity.ok().body(list)
@@ -50,14 +51,14 @@ class PetController(
         }
     }
     @Operation(summary = "맥스 페이지 조회")
-    @GetMapping("/find/page")
+    @GetMapping("/pets/page/all")
     fun findToPage(): ResponseEntity<Any> {
         var page = petService.findToMaxPage()
         return ResponseEntity.ok(page)
     }
 
     @Operation(summary = "유기 동물 db 저장")
-    @PostMapping("/add/pets")
+    @PostMapping("/pets/add/all")
     fun addToPet(): ResponseEntity<String> {
         try{
             petService.addToPet()
@@ -68,7 +69,7 @@ class PetController(
     }
 
     @Operation(summary = "총 유기동물 수 조회")
-    @GetMapping("/find/size")
+    @GetMapping("/pets/count/all")
     fun findToAllSize():ResponseEntity<String>{
         try{
             var find = petService.allToPet()
@@ -79,7 +80,7 @@ class PetController(
     }
 
     @Operation(summary = "수동 delete")
-    @GetMapping("/find/delete/all")
+    @GetMapping("/pets/delete/all")
     fun deletePet():ResponseEntity<String>{
         try{
             petService.deleteAuto()

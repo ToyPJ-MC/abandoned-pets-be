@@ -1,18 +1,19 @@
 package Winter.pets.controller
 
 import Winter.pets.service.SiService
+import io.swagger.annotations.Api
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
+@Api(tags = ["Si"], description = "시 API")
 @RestController
 @RequestMapping("/api")
 class SiController(private val siService: SiService) {
     @Operation(summary = "시 db에 저장 조회 금지 db 중복됨")
-    @GetMapping("/add/si")
+    @GetMapping("/si/add")
     fun AddToSi(): ResponseEntity<String> {
         try {
             siService.addToCountry();

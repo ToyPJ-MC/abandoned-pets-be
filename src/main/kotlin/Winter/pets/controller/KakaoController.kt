@@ -15,12 +15,12 @@ import java.net.CookieManager
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-@Api("카카오 로그인")
+@Api(tags = ["Kakao"], description = "카카오 API")
 @RequestMapping("/api")
 @RestController
 class KakaoController(private val kakaoService: KakaoService) {
     @Operation(summary = "인가코드로 토큰발급", description = "access,refresh 토큰 발급")
-    @GetMapping("/user/login")
+    @GetMapping("/kakao/login")
     fun getToken(@RequestParam("code")code :String,response: HttpServletResponse):ResponseEntity<String>{
         println("$code")
         val token =kakaoService.getToken(code)
@@ -46,7 +46,7 @@ class KakaoController(private val kakaoService: KakaoService) {
 
     }
     @Operation(summary = "개인정보 불러오기", description = "카카오에서 발급한 access_token으로 개인정보 조회")
-    @GetMapping("/user/info")
+    @GetMapping("/kakao/info")
     fun postToUserInfo(@RequestParam("access_token")token :String):ResponseEntity<Any>{
         try{
             var list = kakaoService.getUserInfo(token)
