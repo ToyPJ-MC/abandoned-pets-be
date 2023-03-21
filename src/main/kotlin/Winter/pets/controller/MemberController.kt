@@ -24,4 +24,14 @@ class MemberController(private val memberservice:MemberService) {
             return ResponseEntity.badRequest().body(e.printStackTrace())
         }
     }
+
+    @ApiOperation(value = "member id로 like 누르기", notes = "유저 id 입력하기")
+    @GetMapping("/member/like/memberid={member_id}")
+    fun addToLikePet(@PathVariable("member_id")memberId:String):ResponseEntity<Any>{
+        try{
+            return ResponseEntity.ok().body("")
+        }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body(e.printStackTrace())
+        }
+    }
 }

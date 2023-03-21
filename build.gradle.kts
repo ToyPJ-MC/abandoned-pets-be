@@ -34,7 +34,6 @@ dependencies {
 	implementation("mysql:mysql-connector-java:8.0.32")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("mysql:mysql-connector-java")
-	implementation("org.keycloak:keycloak-spring-security-adapter:19.0.3")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
 	implementation("org.thymeleaf:thymeleaf:3.0.15.RELEASE")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

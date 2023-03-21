@@ -1,15 +1,13 @@
 package Winter.pets.domain.jwt.domain
 
-import Winter.pets.domain.kind.SelectPets
+import Winter.pets.domain.kind.Pet
 import io.swagger.annotations.ApiModelProperty
 import lombok.Data
-import lombok.NoArgsConstructor
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
 import javax.persistence.OneToMany
 
 @Entity
@@ -27,5 +25,7 @@ class Member {
     var profile:String?=null
     var accessToken:String?=null
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
-    var list:MutableList<SelectPets> = ArrayList<SelectPets>()
+    var list:MutableList<Pet> = ArrayList<Pet>()
+
+//    var likeList:List<LikeDto> = ArrayList<LikeDto>()
 }

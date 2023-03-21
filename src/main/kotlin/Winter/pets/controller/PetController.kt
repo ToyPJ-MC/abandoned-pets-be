@@ -1,9 +1,8 @@
 package Winter.pets.controller
 
-import Winter.pets.domain.kind.AddPets
+import Winter.pets.domain.kind.Pet
 import Winter.pets.domain.kind.Cat
 import Winter.pets.domain.kind.Dog
-import Winter.pets.domain.kind.SelectPets
 import Winter.pets.repository.CatRepository
 import Winter.pets.repository.DogRepository
 import Winter.pets.service.PetService
@@ -19,7 +18,7 @@ class PetController(
     private val dogRepo: DogRepository,
     private val catRepo: CatRepository
 ) {
-    @Operation(summary = "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
+   /* @Operation(summary = "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
     @PostMapping("select/memberid={member_id}/kind={kind}")
     fun findToPet(@RequestParam("start_time")start:String, @RequestParam("end_time")end:String, @RequestParam("kind_code")kindCode:String,
                   @PathVariable("kind")kind:String, @RequestParam("si_code")si:String, @RequestParam("gungu_code")gungu:String, @RequestParam("center")center:String,
@@ -39,12 +38,32 @@ class PetController(
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
-    }
+    }*/
+   @Operation(summary =  "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
+   @GetMapping("/pets/select/memberid={member_id}/kindcode={kind_code}")
+   fun serachToPet(@PathVariable("member_id")memberid: String, @RequestParam("kind_cd") kindCd: String,
+                   @RequestParam("care_nm") careNm: String,@RequestParam("org_nm") orgNm : String,
+                   @RequestParam("neuter_yn") neuterYn : String,@PathVariable("kind_code") kindCode:String):ResponseEntity<Any>{
+       try{
+           var list: List<Pet>
+           if(kindCode.equals("417000")){
+               var kindName = "[개] "+ kindCd
+               list = petService.selectToPet(memberid,kindName,careNm,orgNm,neuterYn)
+           }
+           else{ //422400 고양이
+                var kindName = "[고양이] "+ kindCd
+                list = petService.selectToPet(memberid,kindName,careNm,orgNm,neuterYn)
+           }
+           return ResponseEntity.ok().body(list)
+       }catch (e:RuntimeException){
+           return ResponseEntity.badRequest().body("잘못된 조회")
+       }
+   }
     @Operation(summary = "유기동물 페이징 조회 기능", description = "page = 페이지, size = 한 페이지에 보여줄 데이터 수")
     @GetMapping("pets/page={page}/size={size}")
     fun findAll(@PathVariable("page")page:Int, @PathVariable("size")size:Int): ResponseEntity<Any> {
         try{
-            var list: List<AddPets> = petService.findToPet(page,size)
+            var list: List<Pet> = petService.findToPet(page,size)
             return ResponseEntity.ok().body(list)
         }catch (e :RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
@@ -57,7 +76,7 @@ class PetController(
         return ResponseEntity.ok(page)
     }
 
-    @Operation(summary = "유기 동물 db 저장")
+    /*@Operation(summary = "유기 동물 db 저장")
     @PostMapping("/pets/add/all")
     fun addToPet(): ResponseEntity<String> {
         try{
@@ -66,7 +85,7 @@ class PetController(
         }catch (e : RuntimeException){
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
-    }
+    }*/
 
     @Operation(summary = "총 유기동물 수 조회")
     @GetMapping("/pets/count/all")

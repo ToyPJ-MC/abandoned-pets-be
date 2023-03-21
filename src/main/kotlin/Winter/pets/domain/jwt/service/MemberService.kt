@@ -1,8 +1,7 @@
 package Winter.pets.domain.jwt.service
 
 import Winter.pets.domain.jwt.repository.MemberRepository
-import Winter.pets.domain.kind.SelectPets
-import Winter.pets.repository.PetsRepository
+import Winter.pets.domain.kind.Pet
 import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -26,9 +25,9 @@ class MemberService (
         }
 
     /*************유저 ID로 최근 검색 조회**************/ //complete
-    fun findToList(memberId:String): List<SelectPets> {
+    fun findToList(memberId:String): List<Pet> {
         var member = memberRepo.findById(memberId);
-        var list :ArrayList<SelectPets> = ArrayList()
+        var list :ArrayList<Pet> = ArrayList()
         for(i in 0 until member?.list!!.size){
             list.add(member.list.get(i))
         }

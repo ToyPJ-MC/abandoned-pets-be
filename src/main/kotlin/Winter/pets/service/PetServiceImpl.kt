@@ -4,10 +4,8 @@ import Winter.pets.domain.Country.Center
 import Winter.pets.domain.Country.GunGu
 import Winter.pets.domain.jwt.domain.Member
 import Winter.pets.domain.jwt.repository.MemberRepository
-import Winter.pets.domain.kind.AddPets
-import Winter.pets.domain.kind.SelectPets
+import Winter.pets.domain.kind.Pet
 import Winter.pets.repository.*
-import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -21,167 +19,23 @@ import org.springframework.scheduling.annotation.Scheduled
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.text.StringBuilder
 
 @Service @EnableScheduling
 class PetServiceImpl(
-    private val petRepo: PetsRepository,
     private val addPetRepo: AddToPetRepository,
     private val gunguRepo: gunguRepository,
     private val centerRepo: CenterRepository,
     private val memberRepo : MemberRepository
 ) : PetService {
 
-    //************************** 유기동물 select 조회 ***************************//
-    override fun selectToPet(
-        Start: String,
-        end: String,
-        kindCode: String,
-        kind: String,
-        si: String,
-        gungu: String,
-        centerCode: String,
-        state: String,
-        neuter: String,
-        memberId:String
-    ): List<SelectPets> {
-        val findGungu: GunGu = gunguRepo.findBySiNameAndGunguName(si, gungu)
-        val findCenter: Center = centerRepo.findByCenterNameAndGunguName(centerCode, gungu)
-        var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
-        urlBuilder.append(
-            "?" + URLEncoder.encode(
-                "serviceKey",
-                "UTF-8"
-            ) + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D"
-        )
-        urlBuilder.append(
-            "&" + URLEncoder.encode("bgnde", "UTF-8") + "=" + URLEncoder.encode(
-                Start,
-                "UTF-8"
-            )
-        ); /*페이지 번호*/
-        urlBuilder.append(
-            "&" + URLEncoder.encode("endde", "UTF-8") + "=" + URLEncoder.encode(
-                end,
-                "UTF-8"
-            )
-        ); /*xml(기본값) 또는 json*/
-        urlBuilder.append("&" + URLEncoder.encode("upkind", "UTF-8") + "=" + URLEncoder.encode(kindCode, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("kind", "UTF-8") + "=" + URLEncoder.encode(kind, "UTF-8"));
-        urlBuilder.append(
-            "&" + URLEncoder.encode("upr_cd", "UTF-8") + "=" + URLEncoder.encode(
-                findGungu.siCode,
-                "UTF-8"
-            )
-        );
-        urlBuilder.append(
-            "&" + URLEncoder.encode("org_cd", "UTF-8") + "=" + URLEncoder.encode(
-                findGungu.gunguCode,
-                "UTF-8"
-            )
-        );
-        urlBuilder.append(
-            "&" + URLEncoder.encode(
-                "care_reg_no",
-                "UTF-8"
-            ) + "=" + URLEncoder.encode(findCenter.centerCode, "UTF-8")
-        );
-        urlBuilder.append("&" + URLEncoder.encode("state", "UTF-8") + "=" + URLEncoder.encode(state, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("neuter_yn", "UTF-8") + "=" + URLEncoder.encode(neuter, "UTF-8"));
-        urlBuilder.append(
-            "&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode(
-                "1",
-                "UTF-8"
-            )
-        ); /*페이지 번호*/
-        urlBuilder.append(
-            "&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode(
-                "20",
-                "UTF-8"
-            )
-        ); /*한 페이지 결과 수(1,000 이하)*/
-        urlBuilder.append(
-            "&" + URLEncoder.encode("_type", "UTF-8") + "=" + URLEncoder.encode(
-                "json",
-                "UTF-8"
-            )
-        ); /*xml(기본값) 또는 json*/
-        val url = URL(urlBuilder.toString())
-        val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
-        val input = conn.getInputStream()
-        val isr = InputStreamReader(input)
-        // br: 라인 단위로 데이터를 읽어오기 위해서 만듦
-        val br = BufferedReader(isr)
-        var str: String? = null
-        val buf = StringBuffer()
-
-        do {
-            str = br.readLine()
-
-            if (str != null) {
-                buf.append(str)
-            }
-        } while (str != null)
-        val root = JSONObject(buf.toString())
-        val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
-        val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-
-        var list = ArrayList<SelectPets>()
-        val member: Member? = memberRepo.findById(memberId)
-        if (member ==null){ //해당 멤버가 없는 경우
-            for (i in 0 until item.length()) {
-                var select = SelectPets()
-                val jsonObject = item.getJSONObject(i)
-                var dtformat = SimpleDateFormat("yyyyMMdd")
-                var format = SimpleDateFormat("yyyy-MM-dd")
-                var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
-                var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
-                var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
-
-                select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");select.noticeNo = jsonObject.getString("noticeNo")
-                select.processState = jsonObject.getString("processState");select.noticeSdt = formatNotice;select.careAddr = jsonObject.getString("careAddr")
-                select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
-                select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
-                select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
-                select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
-                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
-                select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
-                list.add(select)
-            }
-        }
-        else{ //멤버 조회 success
-            for (i in 0 until item.length()) {
-                var select = SelectPets()
-                val jsonObject = item.getJSONObject(i)
-                var dtformat = SimpleDateFormat("yyyyMMdd")
-                var format = SimpleDateFormat("yyyy-MM-dd")
-                var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
-                var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
-                var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
-
-                select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");select.noticeNo = jsonObject.getString("noticeNo")
-                select.processState = jsonObject.getString("processState");select.noticeSdt = formatNotice;select.careAddr = jsonObject.getString("careAddr")
-                select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");select.chargeNm = jsonObject.getString("chargeNm")
-                select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
-                select.officetel = jsonObject.getString("officetel");select.orgNm = jsonObject.getString("orgNm");select.filename = jsonObject.getString("filename")
-                select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
-                select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
-                select.age = jsonObject.getString("age");select.createAt = LocalDateTime.now();
-                member.list.add(select)
-                petRepo.save(select)
-                list.add(select)
-            }
-        }
-        return list
-    }
 
     //저장된 유기동물 전체 조회시 paging 통해 오래된 동물부터
-    override fun findToPet(page: Int, size: Int): List<AddPets> {
+    override fun findToPet(page: Int, size: Int): List<Pet> {
         var request: PageRequest = PageRequest.of(page, size, Sort.by("happenDt").ascending())
-        var findList: List<AddPets> = addPetRepo.findAll(request).content
+        var findList: List<Pet> = addPetRepo.findAll(request).content
         return findList
     }
     //******************************* db Max Page 조회****************************//
@@ -190,80 +44,11 @@ class PetServiceImpl(
         var size = findPage
         return (size/6).toString()
     }
-    @Scheduled(cron="0 02 12 * * *")
-    /******************************유기동물 db 저장 ********************************/
-    /*****************매일 12시 2분에 db insert 시작******************/
-    override fun addToPet() {
-        for(i in 1 until 100){
-            var urlBuilder = StringBuilder("http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic")
-            urlBuilder.append(
-                "?" + URLEncoder.encode(
-                    "serviceKey",
-                    "UTF-8"
-                ) + "=OmDc6%2BMXvh7HezqfzdkWRK4FVNXbPtLO57bVFEc8A8yJqRyA%2BUh2G2ecrVzzYtC43Fn41QpQwDmnJDId3xaj3w%3D%3D"
-            )
-            urlBuilder.append(
-                "&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode(
-                    i.toString(),
-                    "UTF-8"
-                )
-            ); /*페이지 번호*/
-            urlBuilder.append(
-                "&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode(
-                    "50",
-                    "UTF-8"
-                )
-            ); /*한 페이지 결과 수(1,000 이하)*/
-            urlBuilder.append(
-                "&" + URLEncoder.encode("_type", "UTF-8") + "=" + URLEncoder.encode(
-                    "json",
-                    "UTF-8"
-                )
-            ); /*xml(기본값) 또는 json*/
-            val url = URL(urlBuilder.toString())
-            val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
-            val input = conn.getInputStream()
-            val isr = InputStreamReader(input)
-            // br: 라인 단위로 데이터를 읽어오기 위해서 만듦
-            val br = BufferedReader(isr)
-            var str: String? = null
-            val buf = StringBuffer()
 
-            do {
-                str = br.readLine()
-
-                if (str != null) {
-                    buf.append(str)
-                }
-            } while (str != null)
-            val root = JSONObject(buf.toString())
-            val response = root.getJSONObject("response").getJSONObject("body").getJSONObject("items")
-            val item = response.getJSONArray("item") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
-            for (i in 0 until item.length()) {
-                var select = AddPets()
-                val jsonObject = item.getJSONObject(i);
-
-                var find: String? = addPetRepo.findByDesertionNo(jsonObject.getString("desertionNo"))
-                if (find == null) {
-                    var dtformat = SimpleDateFormat("yyyyMMdd")
-                    var format = SimpleDateFormat("yyyy-MM-dd")
-                    var formatDate: Date = dtformat.parse(jsonObject.getString("happenDt"))
-                    var formatNotice: Date = dtformat.parse(jsonObject.getString("noticeSdt"))
-                    var formatNoticeEnd: Date = dtformat.parse(jsonObject.getString("noticeEdt"))
-
-                    select.sexCd = jsonObject.getString("sexCd");select.kindCd = jsonObject.getString("kindCd");
-                    select.processState = jsonObject.getString("processState");select.noticeSdt =formatNotice;select.careAddr = jsonObject.getString("careAddr")
-                    select.weight = jsonObject.getString("weight");select.desertionNo = jsonObject.getString("desertionNo");
-                    select.careNm = jsonObject.getString("careNm");select.careTel = jsonObject.getString("careTel");select.happenPlace = jsonObject.getString("happenPlace")
-                    select.officetel = jsonObject.getString("officetel");select.popfile = jsonObject.getString("popfile");select.noticeEdt = formatNoticeEnd;select.neuterYn = jsonObject.getString("neuterYn")
-                    select.specialMark = jsonObject.getString("specialMark");select.colorCd = jsonObject.getString("colorCd");select.happenDt = formatDate
-                    select.age = jsonObject.getString("age")
-                    addPetRepo.save(select)
-                }
-            }
-        }
-    }
     override fun deleteToSearchList(memberid: String) {
+        TODO("Not yet implemented")
+    }
+    /*override fun deleteToSearchList(memberid: String) {
         val select  =  petRepo.findAll(Sort.by(Sort.Direction.DESC,"noticeEdt"))
         var sdf = SimpleDateFormat("yyyy-MM-dd")
         var now = sdf.parse(sdf.format(LocalDateTime.now()))
@@ -272,7 +57,7 @@ class PetServiceImpl(
                 petRepo.delete(select.get(i))
             }
         }
-    }
+    }*/
 
     /*****************매일 12시 정각 db delete 시작******************/
     @Scheduled(cron="0 00 12 * * *")
@@ -291,6 +76,35 @@ class PetServiceImpl(
     }
 
     override fun deleteAuto() {
-        petRepo.deleteAll()
+    }
+
+    override fun selectToPet(memberid: String, kindCd: String, careNm: String,orgNm : String,neuterYn : String):List<Pet> {
+        var member = memberRepo.findById(memberid)
+        var list = ArrayList<Pet>()
+        if(member == null){
+            var pet: List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
+            if(pet ==null){
+                throw Exception("해당 동물이 없습니다.")
+            }
+            else{
+                for(i in 0 until pet.size){
+                    list.add(pet[i])
+                }
+            }
+            return list
+        }
+        else{
+            var pet:List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
+            if(pet ==null){
+                throw Exception("해당 동물이 없습니다.")
+            }
+            else{
+                for(i in 0 until pet.size){
+                    list.add(pet.get(i))
+                    member.list.add(list.get(i))
+                }
+            }
+            return list
+        }
     }
 }
