@@ -1,5 +1,7 @@
 package Winter.pets.domain.kind
 
+import Winter.pets.domain.entity.Likes
+import Winter.pets.domain.jwt.domain.Member
 import lombok.Data
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime

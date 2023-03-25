@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -26,10 +27,21 @@ class MemberController(private val memberservice:MemberService) {
     }
 
     @ApiOperation(value = "member id로 like 누르기", notes = "유저 id 입력하기")
-    @GetMapping("/member/like/memberid={member_id}")
-    fun addToLikePet(@PathVariable("member_id")memberId:String):ResponseEntity<Any>{
+    @PostMapping("/member/like/memberid={member_id}")
+    fun addToLikePet(@PathVariable("member_id")memberId:String,noticeNo:String):ResponseEntity<Any>{
         try{
-            return ResponseEntity.ok().body("")
+            memberservice.addToLikes(memberId,noticeNo)
+            return ResponseEntity.ok().body("success")
+        }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body(e.printStackTrace())
+        }
+    }
+    @ApiOperation(value = "member id로 like List 조회", notes = "유저 id 입력하기")
+    @GetMapping("/member/like/list/memberid={member_id}")
+    fun findToLikeList(@PathVariable("member_id")memberId:String):ResponseEntity<Any>{
+        try{
+            val list = memberservice.findToLikesList(memberId)
+            return ResponseEntity.ok().body(list)
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())
         }

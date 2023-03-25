@@ -1,5 +1,6 @@
 package Winter.pets.domain.jwt.domain
 
+import Winter.pets.domain.entity.Likes
 import Winter.pets.domain.kind.Pet
 import io.swagger.annotations.ApiModelProperty
 import lombok.Data
@@ -24,8 +25,6 @@ class Member {
     @Column(name="member_profile")
     var profile:String?=null
     var accessToken:String?=null
-    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
     var list:MutableList<Pet> = ArrayList<Pet>()
-
-//    var likeList:List<LikeDto> = ArrayList<LikeDto>()
 }
