@@ -42,22 +42,18 @@ class MemberService (
     }
     fun addToLikes(memberId: String,noticeNo:String){
         var pet = petRepo.findByNoticeNo(noticeNo) //공고 번호로 해당 pet 찾기
-        var like = likeRepo.findByMemberId(memberId)
-        if(like ==null){
-            var likes = Likes()
-            likes.member = memberRepo.findById(memberId)!!
-            likes.list.add(pet!!)
-            likeRepo.save(likes)
-        }
-        else{
-            like.list.add(pet!!)
-        }
+        var likes = Likes()
+        likes.member = memberRepo.findById(memberId)!!
+        likes.list.add(pet!!)
+        likeRepo.save(likes)
     }
     fun findToLikesList(memberId: String):List<Pet> { //like list 조회 == pet
-        var like = likeRepo.findByMemberId(memberId)
+        var like:List<Likes>? = likeRepo.findByMemberId(memberId)
         var list :ArrayList<Pet> = ArrayList()
-        for(i in 0 until like?.list!!.size){
-            list.add(like.list.get(i))
+        for(i in 0 until like!!.size){
+            for(j in 0 until like.get(i).list.size){
+                list.add(like.get(i).list.get(j))
+            }
         }
         var without = list.distinctBy { it.noticeNo }
         return without

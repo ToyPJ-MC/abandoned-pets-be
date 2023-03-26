@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface LikeRepository : JpaRepository<Likes,Long>{
 
-    fun findByMemberId(memberId: String):Likes?{
+    fun findByMemberId(memberId: String):List<Likes>?{
         return null
     }
 }
