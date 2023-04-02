@@ -25,6 +25,6 @@ class Member {
     @Column(name="member_profile")
     var profile:String?=null
     var accessToken:String?=null
-    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
     var list:MutableList<Pet> = ArrayList<Pet>()
 }

@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 @Api(tags = ["Member"], description = "멤버 API")
 @RestController
@@ -42,6 +44,16 @@ class MemberController(private val memberservice:MemberService) {
         try{
             val list = memberservice.findToLikesList(memberId)
             return ResponseEntity.ok().body(list)
+        }catch (e:RuntimeException){
+            return ResponseEntity.badRequest().body(e.printStackTrace())
+        }
+    }
+    @ApiOperation(value = "member id별 최근조회 list 삭제 기능", notes = "유저 id , 공고 번호 입력하기")
+    @PostMapping("/member/searchlist/delete/memberid={member_id}")
+    fun deleteToSearchList(@PathVariable("member_id")memberId:String,@RequestBody noticeNo: List<String>):ResponseEntity<Any>{
+        try{
+            memberservice.deleteToSelectPet(memberId,noticeNo)
+            return ResponseEntity.ok().body(noticeNo + "삭제 완료")
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())
         }

@@ -97,15 +97,4 @@ class PetController(
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }
-
-    @Operation(summary = "수동 delete")
-    @GetMapping("/pets/delete/all")
-    fun deletePet():ResponseEntity<String>{
-        try{
-            petService.deleteAuto()
-            return ResponseEntity.ok().body("삭제완료")
-        }catch (e:RuntimeException){
-            return ResponseEntity.badRequest().body("잘못된 조회")
-        }
-    }
 }

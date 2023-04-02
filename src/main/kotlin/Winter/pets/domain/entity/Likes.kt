@@ -20,6 +20,6 @@ class Likes {
     @JoinColumn(name="member_id")
     lateinit var member:Member
 
-    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
     var list:MutableList<Pet> = ArrayList<Pet>()
 }
