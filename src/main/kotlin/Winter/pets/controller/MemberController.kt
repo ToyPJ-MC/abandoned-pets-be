@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api")
 class MemberController(private val memberservice:MemberService) {
 
-    @ApiOperation(value = "member id 로 최근 검색 조회", notes = "유저 id 입력하기")
-    @GetMapping("/member/searchlist/memberid={member_id}")
-    fun searchToList(@PathVariable("member_id")memberId:String):ResponseEntity<Any>{
+    @ApiOperation(value = "member id 로 최근 검색 조회", notes = "유저 access_token 입력하기")
+    @GetMapping("/member/searchlist/memberid={access_token}")
+    fun searchToList(@PathVariable("access_token")token:String):ResponseEntity<Any>{
         try{
-            val list = memberservice.findToList(memberId)
+            val list = memberservice.findToList(token)
             return ResponseEntity.ok().body(list)
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())
