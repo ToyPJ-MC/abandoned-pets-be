@@ -32,6 +32,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.security:spring-security-oauth2-client:5.7.5")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.6")
+	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4") //yml 암호화
 	implementation("mysql:mysql-connector-java:8.0.32")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("mysql:mysql-connector-java")

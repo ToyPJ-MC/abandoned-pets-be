@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false&charset=utf8
-    username: root
-    password: 1257
+    url: ENC(Jet6vf474mYl5VsSZzKN8lUEbfv/ZxYmE/2M6KjcGrK1s1k4hCdFXJNCOvaLbmkjCUNSm28rUpcorEO8SRx8fephCLJoJLSEm1KLUk8HUT2daCVyvmKeCG8ianMQ4Stnl45tDM10/Ld1cZs38AT1qRqRRSyITQn+4qEQd6wSB+M=)
+    username: ENC(zAPpdhVnUbXRF1PzfQIUNw==)
+    password: ENC(V0wi+I5jqHzdR0do44UZ1w==)
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
