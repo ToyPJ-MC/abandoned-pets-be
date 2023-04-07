@@ -1,4 +1,5 @@
 kakao:
   client_id: f572e34312b48d6cebb3d5ce372cf2a7
-  redirect_uri: http://localhost:5173
-  client_secret: snwqolbE6Z5ypThJ3eNf1t33c8ymMvhq
+  redirect_uri: http://localhost:8080/login/oauth2/code/kakao
+  client_secret: gPoRjjO0hNzsAYT4Ynd2GCtqsCzBh5ES
+  token_uri: https://kauth.kakao.com/oauth/token
