@@ -17,7 +17,7 @@ class Likes {
     @Column(updatable = false)
     var createAt= LocalDateTime.now()
     @ManyToOne
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="member_email")
     lateinit var member:Member
 
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)

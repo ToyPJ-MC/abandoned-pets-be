@@ -1,0 +1,4 @@
+jwt:
+  secret: c2Rmc2RmYXNkZuyKpO2UhOungeqwnOqwmeydgOqxsGFzZGFzZGFzZGFkYXNkYXNkYXNkYXNkYXNkYXNkYXNkZGRkZGRkZGtsc2RqZ2xrc2FqZmdpb2pyd2Fpb2pnaW9yd2FqaW9ndTkwZmRnamllYW9yaGpnb2hqc2doZm5qZ3NkbmlqZGZuZ2l1c25yZ3VpcmV1aXRodWlyaHRoYXVpaAo
+  expire_in_seconds: 3600 # 1 hours
+  authorities_key: abandonedPet

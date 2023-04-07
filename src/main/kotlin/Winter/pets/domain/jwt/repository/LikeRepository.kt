@@ -9,7 +9,7 @@ interface LikeRepository : JpaRepository<Likes,Long>{
     fun findByMemberId(memberId: String):Likes?{
         return null
     }
-    fun findbyMemberEmail(memberId: String):Likes?{
+    fun findByMemberEmail (member_email: String):Likes?{
         return null
     }
 }

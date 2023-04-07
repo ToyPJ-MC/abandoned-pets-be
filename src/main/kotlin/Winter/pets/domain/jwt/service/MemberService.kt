@@ -51,10 +51,10 @@ class MemberService (
         var getEmail = jwtProvider.getEmail(token)
         var member = memberRepo.findByEmail(getEmail)
         var pet = petRepo.findByNoticeNo(noticeNo) //공고 번호로 해당 pet 찾기
-        var likes:Likes? = likeRepo.findByMemberId()//memberId로 like 조회
+        var likes:Likes? = likeRepo.findByMemberEmail(member!!.email!!)//memberId로 like 조회
         if(likes == null){ //like가 없을때
             var like = Likes()
-            like.member = memberRepo.findById(memberId)!!
+            like.member = memberRepo.findByEmail(getEmail)!!
             like.list.add(pet!!)
             likeRepo.save(like)
         }
