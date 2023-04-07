@@ -18,11 +18,16 @@ class CorsConfig : WebMvcConfigurer {
     override
     fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOriginPatterns("http://localhost:5173")
-            .allowedOrigins("http://localhost:5173")
-            .allowCredentials(true)
+            .allowedOriginPatterns("http://192.168.0.14:5173")
+/*
+            .allowedOrigins("http://localhost:8080")
+            .allowedOrigins("http://192.168.0.16:8080/")
+            .allowedOrigins("http://192.168.0.14:5173")
+            .allowedOrigins("http://192.168.0.16:8080/oauth2/authorization/kakao")
+*/
+            .allowedOrigins("*")
+            .allowCredentials(false)
             .allowedHeaders("*")
-            .exposedHeaders("Set-Cookie")
             .allowedMethods("GET","POST")
             .maxAge(3600);
     }
