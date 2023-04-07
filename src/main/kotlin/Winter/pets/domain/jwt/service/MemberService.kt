@@ -1,6 +1,7 @@
 package Winter.pets.domain.jwt.service
 
 import Winter.pets.domain.entity.Likes
+import Winter.pets.domain.jwt.provider.JwtProvider
 import Winter.pets.domain.jwt.repository.LikeRepository
 import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.Pet
@@ -19,7 +20,8 @@ import kotlin.collections.ArrayList
 class MemberService (
     private val memberRepo:MemberRepository,
     private val likeRepo: LikeRepository,
-    private val petRepo : AddToPetRepository
+    private val petRepo : AddToPetRepository,
+    private val jwtProvider: JwtProvider
 ){
     //고안 중
    fun deleteToSelectPet(memberId:String, noticeNo:List<String>) {
@@ -34,8 +36,9 @@ class MemberService (
         }
 
     /*************유저 ID로 최근 검색 조회**************/ //complete
-    fun findToList(memberId:String): List<Pet> {
-        var member = memberRepo.findById(memberId);
+    fun findToList(token:String): List<Pet> {
+        var getEmail = jwtProvider.getEmail(token)
+        var member = memberRepo.findByEmail(getEmail)
         var list :ArrayList<Pet> = ArrayList()
         for(i in 0 until member?.list!!.size){
             list.add(member.list.get(i))
@@ -44,9 +47,11 @@ class MemberService (
         return without
     }
     /************ member like 기능 **************/
-    fun addToLikes(memberId: String,noticeNo:String){
+    fun addToLikes(token: String,noticeNo:String){
+        var getEmail = jwtProvider.getEmail(token)
+        var member = memberRepo.findByEmail(getEmail)
         var pet = petRepo.findByNoticeNo(noticeNo) //공고 번호로 해당 pet 찾기
-        var likes:Likes? = likeRepo.findByMemberId(memberId)//memberId로 like 조회
+        var likes:Likes? = likeRepo.findByMemberId()//memberId로 like 조회
         if(likes == null){ //like가 없을때
             var like = Likes()
             like.member = memberRepo.findById(memberId)!!
