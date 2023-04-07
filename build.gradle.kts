@@ -29,11 +29,17 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.javassist:javassist:3.29.2-GA")
 	implementation("org.json:json:20220924")
-
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.security:spring-security-oauth2-client:5.7.5")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.6")
 	implementation("mysql:mysql-connector-java:8.0.32")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("mysql:mysql-connector-java")
+
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.2")
+	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
 	implementation("org.thymeleaf:thymeleaf:3.0.15.RELEASE")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
