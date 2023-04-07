@@ -10,7 +10,11 @@ interface MemberRepository : JpaRepository<Member,Long> {
     fun findById (id:String):Member?{
         return null
     }
-    fun findByAccessToken (token: String):Member?{
+    fun findByRefreshToken (token: String):Member?{
+        return null
+    }
+
+    fun findByEmail (email:String):Member?{
         return null
     }
 }
