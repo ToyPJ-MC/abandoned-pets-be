@@ -3,8 +3,12 @@ spring:
     import:
       - application-mysql.yml
       - application-kakao.yml
+      - application-oauth.yml
+      - application-jwt.yaml
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
     async:
       request-timeout: 100000
+
+
