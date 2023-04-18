@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api")
 class GunguController(private val gunguService: GunguService) {
-    @Operation(summary="시에 대한 군구 db에 저장")
+    /*@Operation(summary="시에 대한 군구 db에 저장")
     @GetMapping("/gungu/add")
     fun AddToGungu(@RequestParam("name")name:String): ResponseEntity<String>{
         try{
@@ -19,7 +19,7 @@ class GunguController(private val gunguService: GunguService) {
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
 
-    }
+    }*/
     @Operation(summary = "시에 대한 군구 찾기")
     @PostMapping("/gungu/find")
     fun findToGungu(@RequestParam("name") name:String): ResponseEntity<Any> {
