@@ -23,7 +23,7 @@ class JwtProvider {
     @Value("\${jwt.authorities_key}")
     private lateinit var AUTHORITIES_KEY : String
     @Value("\${jwt.expire_in_seconds}")
-    private var validityInMilliseconds : Long = 3600
+    private var validityInMilliseconds : Long =3600
 
     private fun getSecretKey() : Key {
         var keyBytes = Base64.getDecoder().decode(secretKey).toUByteArray() // base64 decode
@@ -33,6 +33,19 @@ class JwtProvider {
     fun createToken(roles : String, email : String): String {
         var now = Date()
         var validity = Date(now.getTime() + validityInMilliseconds * 1000) // 1시간
+        var key = getSecretKey();
+        return Jwts.builder()
+            .setHeaderParam("typ", "JWT")
+            .claim(AUTHORITIES_KEY,roles)
+            .setSubject(email)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(key)
+            .compact()
+    }
+    fun createRefreshToken(roles: String, email: String):String{
+        var now = Date()
+        var validity = Date(now.getTime() + validityInMilliseconds * 1000*24*30) // 30일
         var key = getSecretKey();
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")
