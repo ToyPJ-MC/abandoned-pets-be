@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletResponse
 class OAuth2AuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler() {
     @Autowired
     private lateinit var jwtProvider: JwtProvider
-
+    @Autowired
+    private lateinit var memberRepository: MemberRepository
 
 
     // /login/oauth2/code/{provider-id} -> OAuth 로그인 끝난 후 login/oauth2/code/kakao -> OAuth2AuthenticationSuccessHandler
@@ -31,6 +32,13 @@ class OAuth2AuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler
         var roles = member.authorities.toString()
 
         var accessToken = jwtProvider.createToken(roles, savedEmail)
+        var refreshToken = jwtProvider.createRefreshToken(roles, savedEmail)
+
+        var findMember = memberRepository.findByEmail(savedEmail)
+
+        findMember!!.accessToken = accessToken
+        findMember!!.refreshToken = refreshToken
+
         println("http://localhost:5173/oauth2/redirect?code=$accessToken")
         if(response.isCommitted){
             throw IllegalStateException("Response has already been committed")
