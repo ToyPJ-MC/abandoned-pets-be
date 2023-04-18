@@ -26,6 +26,7 @@ class Member {
     var email:String?=null
     @Column(name="member_profile")
     var profile:String?=null
+    var accessToken:String?=null
     var refreshToken:String?=null
     var role = "ROLE_USER"
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
