@@ -1,19 +1,15 @@
 package Winter.pets.domain.jwt.handler
 
-import Winter.pets.domain.jwt.kakao.KakaoService
 import Winter.pets.domain.jwt.provider.JwtProvider
 import Winter.pets.domain.jwt.repository.MemberRepository
-import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
-import org.springframework.web.util.UriComponentsBuilder
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@Slf4j
 @Component
 class OAuth2AuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler() {
     @Autowired
@@ -31,19 +27,17 @@ class OAuth2AuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler
         var savedEmail = kakakProperty.get("email") as String
         var roles = member.authorities.toString()
 
-        var accessToken = jwtProvider.createToken(roles, savedEmail)
-        var refreshToken = jwtProvider.createRefreshToken(roles, savedEmail)
-
         var findMember = memberRepository.findByEmail(savedEmail)
 
-        findMember!!.accessToken = accessToken
+        var refreshToken = jwtProvider.createRefreshToken(roles, savedEmail)
         findMember!!.refreshToken = refreshToken
 
-        println("http://localhost:5173/oauth2/redirect?code=$accessToken")
+        memberRepository.save(findMember)
+
         if(response.isCommitted){
             throw IllegalStateException("Response has already been committed")
             return
         }
-        redirectStrategy.sendRedirect(request, response, "http://localhost:5173/oauth2/redirect?code=$accessToken")
+        redirectStrategy.sendRedirect(request, response, "http://localhost:5173/oauth2/redirect?code=${refreshToken}")
     }
 }

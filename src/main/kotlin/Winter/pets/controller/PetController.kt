@@ -39,24 +39,18 @@ class PetController(
             return ResponseEntity.badRequest().body("잘못된 조회")
         }
     }*/
-   @Operation(summary =  "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
-   @GetMapping("/pets/select/memberid={member_id}/kindcode={kind_code}")
-   fun serachToPet(@PathVariable("member_id")memberid: String, @RequestParam("kind_cd") kindCd: String,
+   @Operation(summary =  "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 개 : 417000, 고양이 : 422400")
+   @GetMapping("/pets/select/kindcode={kind_code}")
+   fun serachToPet(@RequestParam("access_token")token: String, @RequestParam("kind_cd") kindCd: String,
                    @RequestParam("care_nm") careNm: String,@RequestParam("org_nm") orgNm : String,
-                   @RequestParam("neuter_yn") neuterYn : String,@PathVariable("kind_code") kindCode:String):ResponseEntity<Any>{
-       try{
-           var list: List<Pet>
-           if(kindCode.equals("417000")){
-               var kindName = "[개] "+ kindCd
-               list = petService.selectToPet(memberid,kindName,careNm,orgNm,neuterYn)
-           }
-           else{ //422400 고양이
-                var kindName = "[고양이] "+ kindCd
-                list = petService.selectToPet(memberid,kindName,careNm,orgNm,neuterYn)
-           }
-           return ResponseEntity.ok().body(list)
-       }catch (e:RuntimeException){
-           return ResponseEntity.badRequest().body("잘못된 조회")
+                   @RequestParam("neuter_yn") neuterYn : String,@PathVariable("kind_code") kindCode:String):Any{
+       if(kindCode.equals("417000")){
+           var kindName = "[개] "+ kindCd
+           return petService.selectToPet(token,kindName,careNm,orgNm,neuterYn)
+       }
+       else{ //422400 고양이
+           var kindName = "[고양이] "+ kindCd
+           return petService.selectToPet(token,kindName,careNm,orgNm,neuterYn)
        }
    }
     @Operation(summary = "유기동물 페이징 조회 기능", description = "page = 페이지, size = 한 페이지에 보여줄 데이터 수")

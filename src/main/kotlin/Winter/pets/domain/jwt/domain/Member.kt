@@ -22,11 +22,13 @@ class Member {
     private val id =UUID.randomUUID().toString()
     @Column(name="memeber_name")
     var name:String?=null
-    @Column(name="member_email")
+    @Column(name="memeber_email",unique = true)
     var email:String?=null
     @Column(name="member_profile")
     var profile:String?=null
+    @Column(length=1000)
     var accessToken:String?=null
+    @Column(length=1000)
     var refreshToken:String?=null
     var role = "ROLE_USER"
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)

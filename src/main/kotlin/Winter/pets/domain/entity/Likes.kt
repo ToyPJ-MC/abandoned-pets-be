@@ -13,13 +13,12 @@ class Likes {
     @Column(name="likes_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?=null
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    lateinit var member:Member
     @CreatedDate
     @Column(updatable = false)
-    var createAt= LocalDateTime.now()
-    @ManyToOne
-    @JoinColumn(name="member_email")
-    lateinit var member:Member
-
+    var createTime= LocalDateTime.now()
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.LAZY)
     var list:MutableList<Pet> = ArrayList<Pet>()
 }

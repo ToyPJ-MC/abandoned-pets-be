@@ -3,6 +3,7 @@ package Winter.pets.service
 import Winter.pets.domain.Country.Center
 import Winter.pets.domain.Country.GunGu
 import Winter.pets.domain.jwt.domain.Member
+import Winter.pets.domain.jwt.provider.JwtProvider
 import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.Pet
 import Winter.pets.repository.*
@@ -14,6 +15,7 @@ import java.net.URLEncoder
 import org.json.JSONObject
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.transaction.annotation.Transactional
@@ -27,7 +29,8 @@ import kotlin.text.StringBuilder
 @Service
 class PetServiceImpl(
     private val addPetRepo: AddToPetRepository,
-    private val memberRepo : MemberRepository
+    private val memberRepo : MemberRepository,
+    private val jwtProvider: JwtProvider
 ) : PetService {
 
 
@@ -52,35 +55,40 @@ class PetServiceImpl(
         val size = addPetRepo.findAll().size -1
         return size.toString()
     }
-    override fun selectToPet(memberid: String, kindCd: String, careNm: String,orgNm : String,neuterYn : String):List<Pet> {
-        var member = memberRepo.findById(memberid)
+    override fun selectToPet(token: String, kindCd: String, careNm: String,orgNm : String,neuterYn : String):Any {
+        println(token)
         var list = ArrayList<Pet>()
-        if(member == null){ //id 조회시 null 일떄 화면에 띄울 list만 담기
+        if(token.equals("")){
             var pet: List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
             if(pet ==null){
-                throw Exception("해당 동물이 없습니다.")
+                return ResponseEntity.badRequest().body("해당 동물이 존재하지 않습니다.")
             }
             else{
                 for(i in 0 until pet.size){
                     list.add(pet[i])
                 }
+                return ResponseEntity.ok().body(list)
             }
-            return list
-        }
-        else{
-            var pet:List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
-            if(pet == null){
-                throw Exception("해당 동물이 없습니다.")
-            }
-            else{
-                for(i in 0 until pet.size){
-                    list.add(pet.get(i))
-                    member.list.add(pet.get(i))
-                    memberRepo.save(member)
-                }
 
+        }else{
+            if(jwtProvider.validateToken(token)){
+                var email = jwtProvider.getEmail(token)
+                var member = memberRepo.findByEmail(email)
+                var pet:List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
+                if(pet == null){
+                    return ResponseEntity.badRequest().body("해당 동물이 존재하지 않습니다.")
+                }
+                else{
+                    for(i in 0 until pet.size){
+                        list.add(pet.get(i))
+                        member!!.list.add(pet.get(i))
+                        memberRepo.save(member)
+                    }
+                    return ResponseEntity.ok().body(list)
+                }
             }
-            return list
+            else return ResponseEntity.status(403)
         }
+
     }
 }

@@ -6,10 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface LikeRepository : JpaRepository<Likes,Long>{
 
-    fun findByMemberId(memberId: String):Likes?{
-        return null
-    }
-    fun findByMemberEmail (member_email: String):Likes?{
+    fun findByMember (member: Member): Likes?{
         return null
     }
 }

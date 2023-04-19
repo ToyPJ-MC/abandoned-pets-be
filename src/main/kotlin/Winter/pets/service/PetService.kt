@@ -8,5 +8,5 @@ interface PetService {
     fun findToMaxPage():String
     fun deleteToSearchList(memberid: String)
     fun allToPet():String
-    fun selectToPet(memberid: String, kindCd:String,careNm:String,orgNm : String,neuterYn : String): List<Pet>
+    fun selectToPet(memberid: String, kindCd:String,careNm:String,orgNm : String,neuterYn : String): Any
 }

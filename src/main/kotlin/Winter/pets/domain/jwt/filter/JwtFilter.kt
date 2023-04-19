@@ -11,19 +11,16 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 
 @Component
-class JwtFilter : GenericFilterBean() {
-
-    private lateinit var jwtProvider: JwtProvider
+class JwtFilter(private val jwtProvider: JwtProvider) : GenericFilterBean() {
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
         val httpServletRequest = request as HttpServletRequest
         val jwt:String? = resolveToken(httpServletRequest)
-        val requestURI = httpServletRequest.requestURI
+        //유효성 검증
         if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
+            // 토큰에서 email, 권한을 뽑아 스프링 시큐리티 user를 만들어 Authentication 반환
             val authentication = jwtProvider.getAuthentication(jwt)
+            // 해당 스프링 시큐리티 유저를 시큐리티 컨텍스트에 저장, 즉 디비를 거치지 않음
             SecurityContextHolder.getContext().authentication = authentication
-            println("Security Context에 $authentication 인증 정보를 저장 했습니다.")
-        } else {
-            println("유효한 JWT 토큰이 없습니다. url : $requestURI")
         }
         chain?.doFilter(httpServletRequest, response)
     }

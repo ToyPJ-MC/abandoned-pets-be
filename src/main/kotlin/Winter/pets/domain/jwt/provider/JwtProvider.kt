@@ -1,5 +1,6 @@
 package Winter.pets.domain.jwt.provider
 
+import Winter.pets.domain.jwt.repository.MemberRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -110,4 +111,5 @@ class JwtProvider {
             .body
         return claims.subject
     }
+
 }
