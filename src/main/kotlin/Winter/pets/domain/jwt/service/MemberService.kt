@@ -6,15 +6,8 @@ import Winter.pets.domain.jwt.repository.LikeRepository
 import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.Pet
 import Winter.pets.repository.AddToPetRepository
-import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
-import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -26,7 +19,7 @@ class MemberService (
     private val jwtProvider: JwtProvider
 ){
     //좋아요 list 삭제 기능
-    fun deleteLikePet(token: String, noticeNo:List<String>):Any{
+    fun deleteLikePet(token: String, noticeNo:List<String>):Any {
         if(jwtProvider.validateToken(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
@@ -91,7 +84,7 @@ class MemberService (
             var likes:Likes? = likeRepo.findByMember(member!!)
             for(i in 0 until likes!!.list.size){
                 if(!!likes.list.get(i).noticeNo.equals(noticeNo)){
-                    continue
+                    return ResponseEntity.badRequest().body("이미 좋아요된 유기 동물입니다.")
                 }
                 else{
                     if(likes == null){ //like가 없을때
@@ -126,7 +119,7 @@ class MemberService (
         }
         else return ResponseEntity.status(403)
     }
-
+    // 토큰 재발급 및, 로그인 시 refresh 토큰으로 재발급
     fun memberNewToken(token:String):Any{ //access token 발급 및 재발급 시 refresh 토큰 받음
         var map = HashMap<String,String>()
         var email = jwtProvider.getEmail(token)
@@ -141,6 +134,7 @@ class MemberService (
             }
         else return ResponseEntity.status(403)
     }
+    // 로그아웃 기능 - 로그아웃 시 토큰 null
     fun memberLogOut(token:String){
         if(jwtProvider.validateToken(token)){
             var email = jwtProvider.getEmail(token)
@@ -150,7 +144,7 @@ class MemberService (
             memberRepo.save(member)
         }
     }
-
+    //멤버 개인 정보 조회 기능
     fun memberInfo(token: String):Any{
         if(jwtProvider.validateToken(token)){
             var email = jwtProvider.getEmail(token)

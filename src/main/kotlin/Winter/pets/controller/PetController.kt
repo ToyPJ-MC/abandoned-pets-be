@@ -1,22 +1,21 @@
 package Winter.pets.controller
 
+import Winter.pets.domain.jwt.service.MemberService
 import Winter.pets.domain.kind.Pet
-import Winter.pets.domain.kind.Cat
-import Winter.pets.domain.kind.Dog
-import Winter.pets.repository.CatRepository
-import Winter.pets.repository.DogRepository
+import Winter.pets.domain.kind.PetDto
 import Winter.pets.service.PetService
 import io.swagger.annotations.Api
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
+
 @Api(tags = ["Pet"], description = "펫 API")
 @RestController
 @RequestMapping("/api")
 class PetController(
     private val petService: PetService,
-    private val dogRepo: DogRepository,
-    private val catRepo: CatRepository
+    private val memberService: MemberService
 ) {
    /* @Operation(summary = "유기동물 select 조회 기능", description = "Kind_Code = 품종 코드 입력, Kind = 품종")
     @PostMapping("select/memberid={member_id}/kind={kind}")
@@ -44,24 +43,84 @@ class PetController(
    fun serachToPet(@RequestParam("access_token")token: String, @RequestParam("kind_cd") kindCd: String,
                    @RequestParam("care_nm") careNm: String,@RequestParam("org_nm") orgNm : String,
                    @RequestParam("neuter_yn") neuterYn : String,@PathVariable("kind_code") kindCode:String):Any{
+       var dtoList = mutableListOf<PetDto>()
+       var likeList = memberService.findToLikesList(token) as List<Pet>
+       var selectList: List<Pet>
        if(kindCode.equals("417000")){
            var kindName = "[개] "+ kindCd
-           return petService.selectToPet(token,kindName,careNm,orgNm,neuterYn)
+           selectList = petService.selectToPet(token,kindName,careNm,orgNm,neuterYn) as List<Pet>
        }
        else{ //422400 고양이
            var kindName = "[고양이] "+ kindCd
-           return petService.selectToPet(token,kindName,careNm,orgNm,neuterYn)
+           selectList = petService.selectToPet(token,kindName,careNm,orgNm,neuterYn) as List<Pet>
        }
+       if(!token.equals("")){
+           for (i in selectList){
+               var cnt =0;
+               for(j in likeList){
+                   if(i.noticeNo.equals(j.noticeNo)){
+                       var dto = PetDto(j.id!!, j.sexCd!!, j.kindCd!!,
+                               j.noticeNo!!, j.processState!!, j.careAddr!!, j.noticeSdt!!.toString(),
+                               j.weight!!, j.desertionNo!!, j.careNm!!, j.careTel!!,
+                               j.happenPlace!!, j.officetel!!, j.orgNm!!,
+                               j.filename!!, j.popfile!!, j.noticeEdt!!.toString(), j.neuterYn!!,
+                               j.specialMark!!, j.colorCd!!, j.happenDt!!.toString(), j.age!!, true)
+                       dtoList.add(dto)
+                       break
+                   }
+                   cnt++
+               }
+               if(cnt==likeList.size) {
+                   var dto = PetDto(i.id!!, i.sexCd!!, i.kindCd!!,
+                           i.noticeNo!!, i.processState!!, i.careAddr!!, i.noticeSdt!!.toString(),
+                           i.weight!!, i.desertionNo!!, i.careNm!!, i.careTel!!,
+                           i.happenPlace!!, i.officetel!!, i.orgNm!!,
+                           i.filename!!, i.popfile!!, i.noticeEdt!!.toString(), i.neuterYn!!,
+                           i.specialMark!!, i.colorCd!!, i.happenDt!!.toString(), i.age!!, false)
+                   dtoList.add(dto)
+               }
+           }
+           return ResponseEntity.ok().body(dtoList)
+       }
+       else return ResponseEntity.ok().body(selectList)
    }
     @Operation(summary = "유기동물 페이징 조회 기능", description = "page = 페이지, size = 한 페이지에 보여줄 데이터 수")
     @GetMapping("pets/page={page}/size={size}")
-    fun findAll(@PathVariable("page")page:Int, @PathVariable("size")size:Int): ResponseEntity<Any> {
-        try{
+    fun findAll(@PathVariable("page")page:Int, @PathVariable("size")size:Int,request : HttpServletRequest): ResponseEntity<Any> {
+
             var list: List<Pet> = petService.findToPet(page,size)
-            return ResponseEntity.ok().body(list)
-        }catch (e :RuntimeException){
-            return ResponseEntity.badRequest().body("잘못된 조회")
-        }
+            val cookie = request.cookies?.find { it.name == "access_token" }
+                    ?: return ResponseEntity.ok().body(list)
+            var accessToken = cookie.value
+
+            var likeList = memberService.findToLikesList(accessToken) as List<Pet>
+            var dtoList = mutableListOf<PetDto>()
+            for (i in list){
+                var cnt =0;
+                for(j in likeList){
+                    if(i.noticeNo.equals(j.noticeNo)){
+                        var dto = PetDto(j.id!!, j.sexCd!!, j.kindCd!!,
+                                j.noticeNo!!, j.processState!!, j.careAddr!!, j.noticeSdt!!.toString(),
+                                j.weight!!, j.desertionNo!!, j.careNm!!, j.careTel!!,
+                                j.happenPlace!!, j.officetel!!, j.orgNm!!,
+                                j.filename!!, j.popfile!!, j.noticeEdt!!.toString(), j.neuterYn!!,
+                                j.specialMark!!, j.colorCd!!, j.happenDt!!.toString(), j.age!!, true)
+                        dtoList.add(dto)
+                        break
+                    }
+                    cnt++
+                }
+                if(cnt==likeList.size) {
+                    var dto = PetDto(i.id!!, i.sexCd!!, i.kindCd!!,
+                            i.noticeNo!!, i.processState!!, i.careAddr!!, i.noticeSdt!!.toString(),
+                            i.weight!!, i.desertionNo!!, i.careNm!!, i.careTel!!,
+                            i.happenPlace!!, i.officetel!!, i.orgNm!!,
+                            i.filename!!, i.popfile!!, i.noticeEdt!!.toString(), i.neuterYn!!,
+                            i.specialMark!!, i.colorCd!!, i.happenDt!!.toString(), i.age!!, false)
+                    dtoList.add(dto)
+                }
+            }
+            return ResponseEntity.ok().body(dtoList)
     }
     @Operation(summary = "맥스 페이지 조회")
     @GetMapping("/pets/page/all")
