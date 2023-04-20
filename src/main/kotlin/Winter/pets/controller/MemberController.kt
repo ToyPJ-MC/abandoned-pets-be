@@ -53,7 +53,7 @@ class MemberController(private val memberservice:MemberService,
     fun memberLogOut(@RequestParam("access_token") token:String):ResponseEntity<Any>{
         try{
             memberservice.memberLogOut(token)
-            return ResponseEntity.ok().body("로그아웃 완료")
+            return ResponseEntity.ok().build()
         }catch (e:RuntimeException){
             return ResponseEntity.badRequest().body(e.printStackTrace())
         }

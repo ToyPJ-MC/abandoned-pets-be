@@ -31,9 +31,8 @@ class OAuth2AuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler
 
         var refreshToken = jwtProvider.createRefreshToken(roles, savedEmail)
         findMember!!.refreshToken = refreshToken
-
         memberRepository.save(findMember)
-
+        println(refreshToken)
         if(response.isCommitted){
             throw IllegalStateException("Response has already been committed")
             return

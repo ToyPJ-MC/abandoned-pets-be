@@ -20,7 +20,8 @@ class MemberService (
 ){
     //좋아요 list 삭제 기능
     fun deleteLikePet(token: String, noticeNo:List<String>):Any {
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
             var likes = likeRepo.findByMember(member!!)
@@ -41,7 +42,8 @@ class MemberService (
     }
     //최근 조회 삭제 기능
    fun deleteToSelectPet(token: String, noticeNo:List<String>):Any {
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
             var size = member!!.list.size
@@ -63,7 +65,8 @@ class MemberService (
 
     /*************유저 토큰으로 최근 검색 조회**************/ //complete
     fun findToList(token:String): Any {
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var getEmail = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(getEmail)
             var list :ArrayList<Pet> = ArrayList()
@@ -77,7 +80,8 @@ class MemberService (
     }
     /************ member like 기능 **************/
     fun addToLikes(token: String,noticeNo:String):Any{
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var getEmail = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(getEmail)
             var pet = petRepo.findByNoticeNo(noticeNo) //공고 번호로 해당 pet 찾기
@@ -106,7 +110,8 @@ class MemberService (
     }
     /************ like 목록 조회 **************/
     fun findToLikesList(token: String):Any { //like list 조회 == pet
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
             var like:Likes? = likeRepo.findByMember(member!!)
@@ -130,13 +135,14 @@ class MemberService (
             map.put("accessToken",member.accessToken!!)
             map.put("refreshToken",member.refreshToken!!)
             memberRepo.save(member)
-            return map
+            return ResponseEntity.ok().body(map)
             }
         else return ResponseEntity.status(403)
     }
     // 로그아웃 기능 - 로그아웃 시 토큰 null
     fun memberLogOut(token:String){
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
             member!!.refreshToken = null
@@ -146,7 +152,8 @@ class MemberService (
     }
     //멤버 개인 정보 조회 기능
     fun memberInfo(token: String):Any{
-        if(jwtProvider.validateToken(token)){
+        var member = memberRepo.findByAccessToken(token)
+        if(jwtProvider.validateToken(token)&&member?.accessToken.equals(token)){
             var email = jwtProvider.getEmail(token)
             var member = memberRepo.findByEmail(email)
             return ResponseEntity.ok().body(member)

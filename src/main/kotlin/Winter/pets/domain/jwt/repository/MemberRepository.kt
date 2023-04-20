@@ -17,4 +17,7 @@ interface MemberRepository : JpaRepository<Member,Long> {
     fun findByEmail (email:String):Member?{
         return null
     }
+    fun findByAccessToken (token : String): Member?{
+        return null
+    }
 }
