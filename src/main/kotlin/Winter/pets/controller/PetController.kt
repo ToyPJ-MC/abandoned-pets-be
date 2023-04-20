@@ -44,7 +44,6 @@ class PetController(
                    @RequestParam("care_nm") careNm: String,@RequestParam("org_nm") orgNm : String,
                    @RequestParam("neuter_yn") neuterYn : String,@PathVariable("kind_code") kindCode:String):Any{
        var dtoList = mutableListOf<PetDto>()
-       var likeList = memberService.findToLikesList(token) as List<Pet>
        var selectList: List<Pet>
        if(kindCode.equals("417000")){
            var kindName = "[개] "+ kindCd
@@ -54,7 +53,8 @@ class PetController(
            var kindName = "[고양이] "+ kindCd
            selectList = petService.selectToPet(token,kindName,careNm,orgNm,neuterYn) as List<Pet>
        }
-       if(!token.equals("")){
+       if(!token.equals("No")){
+           var likeList = memberService.findToLikesList(token) as List<Pet>
            for (i in selectList){
                var cnt =0;
                for(j in likeList){

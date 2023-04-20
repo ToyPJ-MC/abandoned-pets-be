@@ -35,7 +35,6 @@ class CustomOauth2Service(private var memberRepository: MemberRepository) : Defa
             member.role = "ROLE_USER"
             memberRepository.save(member)
         }
-        println("$email")
         return DefaultOAuth2User(Collections.singleton(SimpleGrantedAuthority("ROLE_USER")),attributes,"id")
     }
 }

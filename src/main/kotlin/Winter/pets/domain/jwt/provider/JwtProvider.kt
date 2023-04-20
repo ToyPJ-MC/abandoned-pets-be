@@ -9,6 +9,7 @@ import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -34,7 +35,7 @@ class JwtProvider {
 
     fun createToken(roles : String, email : String): String {
         var now = Date()
-        var validity = Date(now.getTime() + validityInMilliseconds * 1000) // 1시간
+        var validity = Date(now.getTime() + validityInMilliseconds *1000) // 1시간
         var key = getSecretKey();
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")
@@ -66,16 +67,19 @@ class JwtProvider {
                 .parseClaimsJws(token)
             return true
         }catch (e : SignatureException){ // signature 에러
-            return throw SignatureException("Invalid JWT signature")
+            throw SignatureException("Invalid JWT signature")
 
         }catch (e : MalformedJwtException){ // token 에러
-            return throw MalformedJwtException("Invalid JWT token")
+            throw MalformedJwtException("Invalid JWT token")
+
         }catch (e : ExpiredJwtException){ // 만료 에러
-            return throw ExpiredJwtException(null, null, "Expired JWT token")
+            throw ExpiredJwtException(null, null, "Expired JWT token")
+
         }catch (e : UnsupportedJwtException){ // 지원하지 않는 에러
-            return throw UnsupportedJwtException("Unsupported JWT token")
+            throw UnsupportedJwtException("Unsupported JWT token")
+
         }catch (e : IllegalArgumentException){ // 토큰이 비어있는 에러
-            return throw IllegalArgumentException("JWT claims string is empty")
+            throw IllegalArgumentException("JWT claims string is empty")
         }
         return false
     }

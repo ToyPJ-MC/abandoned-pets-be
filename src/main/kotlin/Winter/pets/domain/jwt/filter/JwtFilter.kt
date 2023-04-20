@@ -9,6 +9,8 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 
 @Component
 class JwtFilter(private val jwtProvider: JwtProvider) : GenericFilterBean() {
@@ -16,7 +18,7 @@ class JwtFilter(private val jwtProvider: JwtProvider) : GenericFilterBean() {
         val httpServletRequest = request as HttpServletRequest
         val jwt:String? = resolveToken(httpServletRequest)
         //유효성 검증
-        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
+        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt) as Boolean) {
             // 토큰에서 email, 권한을 뽑아 스프링 시큐리티 user를 만들어 Authentication 반환
             val authentication = jwtProvider.getAuthentication(jwt)
             // 해당 스프링 시큐리티 유저를 시큐리티 컨텍스트에 저장, 즉 디비를 거치지 않음
