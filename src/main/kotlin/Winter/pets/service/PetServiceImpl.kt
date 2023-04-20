@@ -67,7 +67,7 @@ class PetServiceImpl(
                 for(i in 0 until pet.size){
                     list.add(pet[i])
                 }
-                return ResponseEntity.ok().body(list)
+                return list
             }
 
         }else{
@@ -81,10 +81,12 @@ class PetServiceImpl(
                 else{
                     for(i in 0 until pet.size){
                         list.add(pet.get(i))
-                        member!!.list.add(pet.get(i))
-                        memberRepo.save(member)
+                        if(!member!!.list.contains(pet.get(i))){
+                            member!!.list.add(pet.get(i))
+                            memberRepo.save(member)
+                        }
                     }
-                    return ResponseEntity.ok().body(list)
+                    return list
                 }
             }
             else return ResponseEntity.status(403)
