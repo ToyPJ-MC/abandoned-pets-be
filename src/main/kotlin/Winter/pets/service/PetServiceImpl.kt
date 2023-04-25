@@ -56,7 +56,6 @@ class PetServiceImpl(
         return size.toString()
     }
     override fun selectToPet(token: String, kindCd: String, careNm: String,orgNm : String,neuterYn : String):Any {
-        println(token)
         var list = ArrayList<Pet>()
         if(token.equals("No")){
             var pet: List<Pet>? = addPetRepo.findByOrgNmAndNeuterYnAndAndKindCd(orgNm,neuterYn,kindCd);
