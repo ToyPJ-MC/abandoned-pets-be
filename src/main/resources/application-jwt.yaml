@@ -1,0 +1,4 @@
+jwt:
+  secret: ENC(mi9DirxUhb+TFZTCR/jt4RohYlFG8X9ZpMfwVGp7raRizI0irwKk1kp1VPDAAQHhGZkaETIZC70mpNwUwpdEoXGJixkuNUNkeEqKl4MTit4mwzAid2ozv/gVpXXw4O5MZz8aDcjIyxma92d0eJdn7x/4AeVQOa4jfb9L1laoz/SJoc9zZyYaxY9f4MJ8s2+cd8triUd6UNPJzO4CnH+rr8TGL2ZzVxg5idbKVYs+FMw/qmKig9a9xOMny0m+9XSFoi3H6PB+EYzhpybJqfl9DcoAarXJZW5PoP0cmV/dRys=)
+  expire_in_seconds: 3600 # 1 hours
+  authorities_key: ENC(4nhFaeE3DCtjdAK1L+g8O9GXot/ZLmguxeaipdXGvDYod+LVgSht0ILhanXtVoYd)
