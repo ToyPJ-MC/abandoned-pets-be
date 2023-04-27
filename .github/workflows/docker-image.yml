@@ -52,5 +52,5 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: moon1257/pets-be:${{ github.sha }}
+          tags: moon1257/abandoned-pets-be:${{ github.sha }}
 
