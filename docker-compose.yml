@@ -6,7 +6,7 @@ services:
       - "18000:8080"
     restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_URL: jdbc:mysql://local_mysql:3306/pets?useSSL=false&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "1257"
 #  abandoned-pets-fe:
