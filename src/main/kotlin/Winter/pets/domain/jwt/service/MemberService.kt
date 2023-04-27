@@ -6,8 +6,15 @@ import Winter.pets.domain.jwt.repository.LikeRepository
 import Winter.pets.domain.jwt.repository.MemberRepository
 import Winter.pets.domain.kind.Pet
 import Winter.pets.repository.AddToPetRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -18,6 +25,10 @@ class MemberService (
     private val petRepo : AddToPetRepository,
     private val jwtProvider: JwtProvider
 ){
+    @Value("\${kakao.client_id}")
+    private lateinit var clientId:String
+    @Value("\${kakao.logout_redirect_uri}")
+    private lateinit var logOutRedirectUri:String
     //좋아요 list 삭제 기능
     fun deleteLikePet(token: String, noticeNo:List<String>):Any {
         var member = memberRepo.findByAccessToken(token)
@@ -148,6 +159,7 @@ class MemberService (
             member!!.refreshToken = null
             member!!.accessToken = null
             memberRepo.save(member)
+            kakaoLogOut()
         }
     }
     //멤버 개인 정보 조회 기능
@@ -159,5 +171,32 @@ class MemberService (
             return ResponseEntity.ok().body(member)
         }
         else return ResponseEntity.status(403)
+    }
+    private fun kakaoLogOut(){
+        try{
+            println("통과")
+            var url = URL("https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${logOutRedirectUri}")
+            var conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.doOutput = true
+            println(url)
+
+            var responseCode = conn.responseCode
+            println("responseCode : $responseCode")
+            if(responseCode==400) throw RuntimeException("400")
+            var br = BufferedReader(InputStreamReader(conn.inputStream))
+            var result = ""
+            var line = ""
+            while(true){
+                line = br.readLine()?:break
+                result += line
+            }
+            println("결과 = $result")
+            conn.disconnect()
+        }catch (MalformedURLException:Exception){
+            MalformedURLException.printStackTrace()
+    }catch (IOException:Exception){
+            IOException.printStackTrace()
+        }
     }
 }

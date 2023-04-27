@@ -3,3 +3,4 @@ kakao:
   redirect_uri: http://localhost:8080/login/oauth2/code/kakao
   client_secret: gPoRjjO0hNzsAYT4Ynd2GCtqsCzBh5ES
   token_uri: https://kauth.kakao.com/oauth/token
+  logout_redirect_uri: http://localhost:5173

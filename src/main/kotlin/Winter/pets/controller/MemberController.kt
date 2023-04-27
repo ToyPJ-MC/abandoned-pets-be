@@ -80,5 +80,4 @@ class MemberController(private val memberservice:MemberService,
     fun postToUserInfo(@RequestParam("access_token")token :String):Any{
         return memberservice.memberInfo(token);
     }
-
 }
