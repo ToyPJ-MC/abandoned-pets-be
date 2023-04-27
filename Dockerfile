@@ -1,7 +1,4 @@
-FROM openjdk:11
-WORKDIR app
-EXPOSE 8080
-COPY build.gradle.kts settings.gradle.kts ./
-COPY ./build/libs/*.jar app.jar
-COPY src ./src
-CMD ["java","-jar","app.jar"]
+FROM adoptopenjdk/openjdk11
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]
